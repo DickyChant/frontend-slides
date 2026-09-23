@@ -1,11 +1,11 @@
 ---
 name: hep-frontend-slides
-description: 🏛️ Academic Classic HTML Slides — zero-dependency, fixed 1920×1080 canvas academic presentations. For CMS/CEPC group meetings, conference talks, pre-approval presentations, etc. Supports 10 color skins + DIY.
+description: 🏛️ Academic Classic HTML Slides — zero-dependency, fixed 1920×1080 canvas academic presentations for HEP group meetings, conference talks and pre-approval presentations. 11 color skins (incl. the serif `paper` look) + DIY, step-by-step reveals driven by the arrow keys or a clicker, review comments (C) that travel inside the saved file, PDF export.
 ---
 
 # Academic Classic — HTML Slides Maker
 
-Fixed 1920×1080 canvas, 10 color skins + DIY custom skin for academic HTML presentations.
+Fixed 1920×1080 canvas, 11 color skins + DIY custom skin for academic HTML presentations, with step reveals, review comments and PDF export built into the engine.
 
 **Activate:** `/hep-frontend-slides` or "make slides" / "academic presentation"
 
@@ -30,12 +30,16 @@ Fixed 1920×1080 canvas, 10 color skins + DIY custom skin for academic HTML pres
 | `reference/ACADEMIC_CLASSIC.md` | Core spec: class index, HTML patterns, EAC rules | **Must read before starting** |
 | `reference/FINE_TUNING.md` | Quick reference for 12 commonly-tuned parameters | Fine-tuning phase |
 | `reference/FIGURE_LAYOUTS.md` | `.fig` figure layout presets | Figure-only pages |
-| `reference/SKINS.md` | 10 color skin CSS specs | Skin selection |
+| `reference/SKINS.md` | 11 color skin CSS specs | Skin selection |
+| `reference/FIELD_NOTES.md` | Lessons from a real 37-slide talk: layout and export pitfalls, step choreography, writing rules for expert rooms | **Read before fine-tuning a talk** |
+| `reference/animation-patterns.md` | Generic CSS animation patterns by feeling | When adding motion |
+| `reference/captures/kappac-hig-workshop-2026/` | A captured reference deck layout (scenes, chrome, animations) | Planning a deck slide by slide |
 | `reference/TERMINAL_BOX.md` | Terminal component architecture, syntax coloring, animation | When using terminals |
-| `scripts/init-slides.py` | CLI scaffold generator (with `--skin` `--logos`) | Step 1 |
+| `scripts/init-slides.py` | CLI scaffold generator (`--skin` `--logos` `--lang`; gates get `--act` labels) | Step 1 |
 | `scripts/renumber-slides.py` | Renumber slides after add/delete (markers + figure dirs) | After structural changes |
 | `scripts/bundle-html.py` | Base64 bundling | When user says bundle |
 | `scripts/export-pdf.sh` | PDF export (supports `--dpr N`) | When user says export PDF |
+| `scripts/test-steps.mjs` | Headless walk proving every step and slide spill works | After adding steps |
 
 All paths relative to: `{{FRONTEND_SLIDES_REPO_PATH}}/`
 
@@ -200,7 +204,38 @@ bash {{FRONTEND_SLIDES_REPO_PATH}}/scripts/export-pdf.sh <path.html> [output.pdf
 
 ---
 
-## Slide Comment Markers
+## Step 4: Presenting
+
+The engine ships fragment-aware navigation, so one key carries a whole talk:
+
+| Key | Action |
+|-----|--------|
+| `→` / `PageDown` | next step on this slide; when steps are exhausted (or there are none), next slide |
+| `←` / `PageUp` | previous step; at step 0, previous slide — arriving fully revealed |
+| `↓` / `↑` / `Space` | whole slides, always fully revealed (Q&A skimming) |
+| `B` / `R` | reveal every step on this slide / collapse it to step 0 |
+| `C` | review-comment mode (below) |
+| `E` / `W` | live text edit / save the edited HTML (comments are baked in) |
+| `G` / `F` | go to slide / fullscreen |
+
+Presenter clickers send `PageUp`/`PageDown`, so the clicker drives the build. A held key does not auto-repeat.
+
+**Steps.** Any element steps in with `class="st" data-st="N"` (`N` = 1, 2, …); the slide arrives with all of them hidden and `→` reveals them in order. Works on `<li>`, `<div>`, SVG `<g>`, `<span>` inside `<td>`. `class="st pop"` adds a rise-and-scale entrance; `data-until="M"` makes a transient that fades after step M (it is `display:none` in the PDF, so the export shows the final state). Hidden steps keep their box — a panel that a later element replaces belongs in an absolute overlay, not in normal flow. Rule from the field: the words arrive with the visual — step the bullet and the drawing it describes on the same beat (see `reference/FIELD_NOTES.md` §5–6).
+
+**Gates.** `init-slides.py` writes `style="--act: 'Part N';"` (or `'Appendix'` for Back Up) on each transition slide; skins that render an eyebrow (e.g. `paper`) read it. Never use CSS counters for this — hidden siblings do not increment in the headless export.
+
+**Review comments (`C`).** A reviewer presses `C`, clicks anywhere on a slide, and a numbered pin plus an editor appear; a side panel lists comments grouped by slide with resolve/delete, and exports Markdown or JSON (JSON imports back). Comments live in `localStorage` and are baked into the file by `W`, so a reviewer can simply send the saved HTML back. Pins render only while the mode is on, so the deck and the PDF stay clean. Strip `<script id="baked-comments">` before circulating a bundle.
+
+**Prove it headlessly** (Playwright is installed by the first `export-pdf.sh` run; run from a directory that has `node_modules/playwright`):
+
+```bash
+node {{FRONTEND_SLIDES_REPO_PATH}}/scripts/test-steps.mjs /abs/path/<deck>_bundle.html
+# prints the steps per slide and the last slide reached; a clean PDF exit code proves nothing about steps
+```
+
+---
+
+## Slide Marker Comments
 
 Each `<section>` must be preceded by `<!-- [Slide N] Type: Title -->`.
 Scroller end must have `<!-- END slides-scroller -->`.
