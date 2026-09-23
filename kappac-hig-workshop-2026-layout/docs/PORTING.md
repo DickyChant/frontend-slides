@@ -98,7 +98,7 @@ steps per slide. Every animation bug above passed with a clean exit code.
 - Spoken-style bullets at 1.4–1.7 em; 18 px is the floor for anything, captions included; weight-700 serif headings survive projection, 600 does not.
 - Scope chips per point, not per slide, when a slide mixes what is public and what is new. Say which note a number comes from.
 - Say "and", not "&", in headings. No emoji on CERN-hosted pages (tofu). MathJax `$` must pair inside one element.
-- LLM de-slop passes (claudish-to-english) flatten physics vocabulary; cherry-pick from their output, never apply it as a patch.
+- LLM de-slop passes (`claudish-to-english`, a submodule of this repo) flatten physics vocabulary; cherry-pick from their output, never apply it as a patch. Feed it ~1000-word chunks; 3000 words times out.
 - Take every number from the note's LaTeX tables, not from older talk PDFs: the CHEP/ML4Jets decks were two versions stale.
 
 ## 9. Comment mode (from the other agent's deck)

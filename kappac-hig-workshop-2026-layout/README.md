@@ -29,6 +29,10 @@ The port itself is now built into the engine on this branch, not kept here:
   numbered pins, side panel, Markdown/JSON export, baked into W-saved files)
 - `scripts/init-slides.py` — `--lang` (default `en`), plain-text `<title>`
 - `scripts/test-steps.mjs` — headless walk that proves steps and spills work
+- `../claudish-to-english/` — git submodule: the prose de-slop pass used on
+  slide copy (`git submodule update --init` after cloning; run it with
+  `CLAUDISH_PROVIDER=anthropic CLAUDISH_ANTHROPIC_AUTH=oauth`, cherry-pick
+  its output, never apply it wholesale — it flattens physics vocabulary)
 
 ## Quick start for a new deck
 
