@@ -1,0 +1,250 @@
+/* ==========================================================================
+   KAPPAC PAPER THEME — fine-tuning override layer for frontend-slides-PKU
+   --------------------------------------------------------------------------
+   Ported BY INTENT from the κc Higgs-workshop deck (docs/LAYOUT.md): serif
+   headings, system-sans body, mono chrome and captions, transparent header /
+   footer over hairlines, thin progress bar, act-labelled transition gates,
+   paper cards, a 14 px reveal rise. The original palette was cream / maroon
+   (paper #f6f1e7, ink #1c1712, accent #8a1f1f); the default below is the
+   white / navy variant that survived a real audience. Recolour = edit the
+   variables in :root only.
+
+   HOW TO USE
+     1. Scaffold with init-slides.py as usual (skin: classic).
+     2. Paste this whole file inside <style id="kappac-paper-override"> … </style>
+        immediately before </head>, AFTER the skin, so it wins the cascade.
+     3. Add the fonts link before it:
+        <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+     4. Never re-run init-slides.py on the themed deck: it emits an unthemed one.
+   ========================================================================== */
+:root {
+    --theme-bg: #fcfcfb;
+    --theme-primary: #1a4480;        /* navy: headings, links, table heads, chip A */
+    --theme-secondary: #4e2a84;      /* purple: important boxes, chip B */
+    --theme-accent: #9fb9dd;
+    --theme-highlight: #1a4480;
+    --theme-progress: #1a4480;
+    --theme-text: #191c20;
+    --ink-soft: #5c636e;
+    --card: #ffffff;
+    --hairline: rgba(25, 28, 32, 0.14);
+    --font-serif: 'EB Garamond', Georgia, 'Times New Roman', serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+    --font-body: var(--font-sans);
+    --font-comic: var(--font-serif);   /* transition slides go serif, not Comic Sans */
+    --duration-normal: 0.65s;          /* kappac scene-in 650 ms */
+}
+
+/* Ground: soft radial wash, no texture */
+.slide {
+    background-color: var(--theme-bg);
+    background-image: radial-gradient(ellipse at 50% 30%, #ffffff 0%, #f4f6f9 100%);
+    background-size: 100% 100%;
+}
+
+/* --- Chrome: quiet header, section label in serif ---------------------- */
+.global-header {
+    background: transparent;
+    box-shadow: none;
+    border-bottom: 1px solid var(--hairline);
+    padding-left: 60px;
+}
+.header-text {
+    color: var(--theme-primary);
+    font-family: var(--font-serif);
+    font-weight: 700;                  /* 600 washes out at projection distance */
+    font-size: 42px;
+    letter-spacing: 0.2px;
+}
+.logo-img {
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
+    background-color: var(--card);
+}
+/* Wide wordmark logos (7:1) squash square ones: cap them inline in the HTML,
+   e.g. style="max-width: 250px; height: 78%;" on the <img>. */
+
+/* --- Chrome: mono footer over a hairline ------------------------------- */
+.global-footer {
+    background: transparent;
+    box-shadow: none;
+    border-top: 1px solid var(--hairline);
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 19px;                   /* 18 px is the floor for anything on screen */
+}
+.global-footer .highlight-accent { color: var(--theme-primary); }
+
+/* Thin progress bar, kappac-style */
+.progress-container { height: 3px; gap: 0; }
+.progress-segment { background: rgba(25, 28, 32, 0.07); }
+.progress-segment.active { background: var(--theme-progress); box-shadow: none; }
+
+/* --- Title slide: ink serif on paper, italic accent -------------------- */
+.title-banner {
+    background: transparent;
+    color: var(--theme-text);
+    padding: 70px 140px 10px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+.title-banner h1 {
+    font-family: var(--font-serif);
+    font-size: 82px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.12;
+}
+.title-banner .highlight-accent { color: var(--theme-primary); font-style: italic; }
+.title-banner h2 {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 34px;
+    color: var(--ink-soft);
+    margin-top: 26px;
+}
+.title-banner::after {
+    content: '';
+    display: block;
+    width: 220px;
+    height: 4px;
+    background: var(--theme-primary);
+    margin: 42px auto 0;
+    border-radius: 2px;
+}
+.author-info { font-family: var(--font-sans); }
+.author-info a { color: var(--theme-primary) !important; }
+
+/* --- Transition slides: mono eyebrow + serif italic --------------------
+   The eyebrow text comes from an inline custom property on the slide:
+     <section class="slide transition-slide" style="--act: 'Part 3';">
+   Do NOT use CSS counters for this: hidden siblings do not increment in the
+   headless PDF export and every gate prints "Part 1".                       */
+.transition-text {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 104px;
+    color: var(--theme-text);
+    letter-spacing: -1px;
+}
+.transition-text::before {
+    content: var(--act, '');
+    display: block;
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--theme-primary);
+    margin-bottom: 30px;
+}
+
+/* --- Body text ---------------------------------------------------------- */
+.bullet-list { font-family: var(--font-sans); }
+.bullet-list li { line-height: 1.45; }
+.bullet-list a { color: var(--theme-primary); }
+/* Dense mode for figure-heavy slides */
+.bullet-list.dense li { margin-bottom: 12px; }
+.bullet-list.dense li ul { margin-top: 6px; }
+.bullet-list.dense li ul li { margin-bottom: 6px; }
+
+/* --- Boxes: paper cards, muted accents --------------------------------- */
+.highlight-box, .important-box, .warning-box, .tip-box {
+    background: var(--card);
+    backdrop-filter: none;
+    border: 1px solid rgba(25, 28, 32, 0.10);
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+    font-family: var(--font-sans);
+}
+.highlight-box { border-left: 6px solid var(--theme-primary); }
+.highlight-box strong { color: var(--theme-primary); }
+.important-box { border-left: 6px solid var(--theme-secondary); }
+.important-box strong { color: var(--theme-secondary); }
+.warning-box { border-left: 6px solid #b07a1f; }
+.warning-box strong { color: #b07a1f; }
+.tip-box { border-left: 6px solid #4a6741; }
+.tip-box strong { color: #4a6741; }
+
+/* --- Tables: serif header on paper rows -------------------------------- */
+th {
+    background: var(--theme-primary);
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border: 1px solid rgba(26, 68, 128, 0.35);
+}
+td {
+    font-family: var(--font-sans);
+    background: var(--card);
+    border: 1px solid rgba(28, 23, 18, 0.10);
+}
+tr:nth-child(even) td { background: #f3f6fa; }
+tr:hover td { background: rgba(26, 68, 128, 0.05); }
+
+/* --- Figures: framed as paper cards, mono captions --------------------- */
+.fig .figure-frame {
+    background: var(--card);
+    border: 1px solid rgba(25, 28, 32, 0.09);
+    border-radius: 6px;
+    padding: 10px 10px 6px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+}
+.fig .figure-frame img { box-shadow: none; }
+.fig .caption, .figure-frame .caption, .tab .caption {
+    font-family: var(--font-mono);
+    color: var(--ink-soft);
+    margin-top: 6px;
+    font-size: 20px;
+}
+
+/* --- Scope chips: a small mono tag, top-right under the logos ----------
+   Two semantic slots. In the HGCal deck: .public = already in the public
+   DP note (blue), .new = only in the paper under review (purple). Use
+   .inline to put a chip inside a bullet when a slide mixes scopes.        */
+.scope-tag {
+    position: absolute; top: 72px; right: 60px; z-index: 500;
+    font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.12em;
+    padding: 5px 12px; border-radius: 4px; border: 1px solid; white-space: nowrap;
+}
+.scope-tag.public { color: var(--theme-primary);   border-color: rgba(26,68,128,.45); background: rgba(26,68,128,.07); }
+.scope-tag.new    { color: var(--theme-secondary); border-color: rgba(78,42,132,.45); background: rgba(78,42,132,.07); }
+.scope-tag.inline { position: static; display: inline-block; margin: 0 6px; font-size: 0.72em; vertical-align: 2px; }
+
+/* --- Schematic cards: inline-SVG drawings framed like figures ---------- */
+.schematic-card {
+    background: var(--card); border: 1px solid rgba(25,28,32,.09); border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(15,23,42,.06); padding: 12px 14px 8px; text-align: center;
+}
+.schematic-card .caption { font-family: var(--font-mono); color: var(--ink-soft); font-size: 19px; margin-top: 4px; }
+
+/* --- Reveal: kappac 14 px rise ----------------------------------------- */
+.reveal { transform: translateY(14px); }
+/* Headless export (navigator.webdriver): step-system.js adds html.rv-instant
+   so screenshots never capture a mid-fade state. */
+html.rv-instant .reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+
+/* --- Steps (see port/step-system.js) -----------------------------------
+   <el class="st" data-st="N">            appears at step N (opacity only:
+                                          it KEEPS ITS BOX while hidden)
+   <el class="st pop" data-st="N">        rise-and-scale entrance
+   <el class="st" data-st="N" data-until="M">  transient: visible for steps
+                                          N..M, then fades; display:none in
+                                          the PDF so the export shows the
+                                          final state
+   .dot / .curvepath inside a stepped group: staggered children, e.g. a curve
+   drawn point by point (set --di:0,1,2… on each dot).                       */
+.st { opacity: 0; transition: opacity 0.45s ease; }
+.st.on { opacity: 1; }
+.st.pop { transform: translateY(12px) scale(0.97); transition: opacity 0.45s ease, transform 0.45s ease; }
+.st.pop.on { transform: none; }
+.st .dot { opacity: 0; transition: opacity 0.3s ease; }
+.st.on .dot { opacity: 1; transition-delay: calc(var(--di, 0) * 90ms); }
+.st .curvepath { opacity: 0; transition: opacity 0.5s ease; }
+.st.on .curvepath { opacity: 1; transition-delay: 1.35s; }
+html.rv-instant .st, html.rv-instant .st * { opacity: 1 !important; transition: none !important; }
+html.rv-instant .st[data-until] { display: none !important; }
