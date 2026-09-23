@@ -19,26 +19,30 @@ Source talk: Andrzej Novak · Phil Harris Lab @ MIT · CMS Higgs Workshop · 2 S
 - `docs/PORTING.md` — **what it took to port this into frontend-slides-PKU**:
   the intent-to-engine mapping, layout and export lessons, the step system's
   five rewrites, choreography rules, and writing rules for an expert room
-- `port/kappac-paper-override.css` — the theme as one override layer (paste
-  before `</head>`, after the skin; recolour via `:root` only)
-- `port/step-system.js` — fragment-aware keys (→/PgDn step then spill,
-  ←/PgUp mirror, ↑↓ whole slides, B reveal, R reset), safe to inline anywhere
-- `port/test-steps.mjs` — headless Playwright walk that proves the steps and
-  spills actually work (spoofs `navigator.webdriver`)
+
+The port itself is now built into the engine on this branch, not kept here:
+
+- `assets/skins/paper.css` — the theme as a first-class skin: `--skin paper`
+- `assets/templates/Empty_template.html` — fragment-aware keys (→/PgDn step
+  then spill, ←/PgUp mirror, ↑↓/Space whole slides, B reveal, R reset),
+  `.st` step markup, `rv-instant` export mode, and **comment mode** (C: drop
+  numbered pins, side panel, Markdown/JSON export, baked into W-saved files)
+- `scripts/init-slides.py` — `--lang` (default `en`), plain-text `<title>`
+- `scripts/test-steps.mjs` — headless walk that proves steps and spills work
 
 ## Quick start for a new deck
 
 ```bash
-python3 scripts/init-slides.py … --skin classic --out deck.html
-sed -i 's|<html lang="zh-CN">|<html lang="en">|' deck.html
-# 1. paste port/kappac-paper-override.css into <style id="kappac-paper-override"> before </head>
-# 2. add the EB Garamond + IBM Plex Mono <link> (see the CSS header)
-# 3. paste port/step-system.js into a <script> (end of body, or inside any slide)
-# 4. mark steps: class="st" data-st="1", "2", …; transients: data-until="M"
-# 5. gates: style="--act: 'Part 1'" on each transition slide
+python3 scripts/init-slides.py … --skin paper --out deck.html
+# gates:  <section class="slide transition-slide" style="--act: 'Part 1';">
+# steps:  class="st" data-st="1", "2", …   transients: data-until="M"   pop-in: class="st pop"
 python3 scripts/bundle-html.py deck.html && bash scripts/export-pdf.sh deck_bundle.html out.pdf --dpr 1
-node port/test-steps.mjs "$PWD/deck_bundle.html"
+node scripts/test-steps.mjs "$PWD/deck_bundle.html"     # needs node_modules/playwright next to it
 ```
+
+Keys in the deck: → / PgDn step then next slide · ← / PgUp back · ↑ ↓ Space
+whole slides · B reveal all · R reset · C comment mode · E edit · W save · G
+go to · F fullscreen.
 
 ## Framework (short)
 

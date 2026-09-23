@@ -58,7 +58,11 @@ def main():
     )
     parser.add_argument(
         "--skin", default="classic", choices=SKIN_CHOICES,
-        help="Color skin (default: classic = PKU Red-Yellow-White)"
+        help="Color skin (default: classic = PKU Red-Yellow-White; paper = ink-on-paper serif look)"
+    )
+    parser.add_argument(
+        "--lang", default="en",
+        help="HTML lang attribute (default: en; use zh-CN for a Chinese deck)"
     )
     args = parser.parse_args()
 
@@ -135,7 +139,11 @@ def main():
         )
 
     # 4. Replace placeholders (footer also uses highlighted title)
+    # <title> gets the plain text (the tab would otherwise show literal <span> tags);
+    # the banner gets the highlighted version
+    html = html.replace("<title>{{TITLE_PLACEHOLDER}}</title>", f"<title>{args.title}</title>")
     html = html.replace("{{TITLE_PLACEHOLDER}}", highlighted_title)
+    html = html.replace("{{LANG_PLACEHOLDER}}", args.lang)
     html = html.replace("{{AUTHOR_PLACEHOLDER}}", args.speaker)
     html = html.replace("{{EVENT_PLACEHOLDER}}", args.event)
 
@@ -219,6 +227,7 @@ def main():
         slide_idx += 1
 
         # --- Generate per Section: transition + content placeholder pages ---
+        part_no = 0
         for sec in args.outline:
             parts = sec.rsplit(":", 1)
             title = parts[0].strip()
@@ -226,10 +235,17 @@ def main():
             if len(parts) > 1 and parts[1].isdigit():
                 count = int(parts[1])
 
-            # Transition page
+            # Transition page. The gate eyebrow ("PART 3" / "APPENDIX") is an inline
+            # custom property read by skins that render .transition-text::before;
+            # CSS counters would not survive the headless PDF export.
+            if title.lower().replace(" ", "") in ("backup", "appendix", "spare", "backupslides"):
+                act = "Appendix"
+            else:
+                part_no += 1
+                act = f"Part {part_no}"
             injections.append(f"""
     <!-- [Slide {slide_idx}] Transition: {title} -->
-    <section class="slide transition-slide" data-header="hidden" data-title="">
+    <section class="slide transition-slide" data-header="hidden" data-title="" style="--act: '{act}';">
         <div class="transition-text reveal d1">{title}</div>
     </section>""")
             slide_idx += 1

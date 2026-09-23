@@ -4,7 +4,9 @@ Field notes from building a 37-slide, in-person CMS status-update deck
 (HGCal generative fast simulation, Phase-2 Software Days, September 2026) on
 the PKU engine, styled by intent after the κc workshop deck documented in
 this directory. Everything below was learned by shipping a version that was
-wrong first. `port/` holds the reusable pieces.
+wrong first. The reusable pieces are built into the engine on this branch:
+`assets/skins/paper.css`, the step system and comment mode in
+`assets/templates/Empty_template.html`, and `scripts/test-steps.mjs`.
 
 ## 1. Port intent, not markup
 
@@ -14,9 +16,9 @@ table). The PKU engine is a fixed 1920×1080 scroll-snap scroller of
 
 | κc intent (docs/) | PKU realisation |
 |---|---|
-| paper theme, serif headings, mono chrome | `port/kappac-paper-override.css` — an override `<style>` after the skin |
+| paper theme, serif headings, mono chrome | `assets/skins/paper.css` (`--skin paper`) |
 | 650 ms scene-in, 14 px rise | `--duration-normal: 0.65s`, `.reveal { transform: translateY(14px) }` |
-| fragments (`#scene/1..5`) | `port/step-system.js` + `class="st" data-st="N"` |
+| fragments (`#scene/1..5`) | the template's step system + `class="st" data-st="N"` |
 | act / section eyebrow on gates | inline `--act: 'Part 3'` on the transition slide, rendered by `::before` |
 | `n / 28` counter | the engine's footer already numbers slides; keep it |
 | backup gate | a transition slide with `--act: 'Appendix'` |
@@ -26,11 +28,13 @@ Palette: the κc cream/maroon was tried and rejected by the audience-facing
 reviewer within one look ("colour scheme is bad"). White/navy with one
 secondary (purple) stuck. Ship the variables, not the opinion.
 
-## 2. The override layer is the only place you touch the theme
+## 2. Theme via the skin; fine-tuning via one override block
 
-Scaffold once with `init-slides.py`, then never again on the same deck: it
-emits an unthemed deck. All styling lives in one `<style id="…-override">`
-block before `</head>`. Three scaffold defects to fix right after scaffolding:
+`--skin paper` gives the whole look. Deck-specific tweaks go in ONE
+`<style id="…-override">` block before `</head>`, never by re-running
+`init-slides.py` on a finished deck (it emits a fresh one). Three scaffold
+defects the branch fixes in the engine (`--lang`, `<title>`, logo cap); on
+the upstream `main` you still fix them by hand:
 
 1. `<html lang="zh-CN">` — Chrome offers to translate an English deck. `sed` it to `en`.
 2. `.logo-img { height: 130% }` lets a 7:1 wordmark squash a square logo. Cap wordmarks inline (`max-width: 250px; height: 78%`).
@@ -57,7 +61,7 @@ Also: `--author "Name:1,2"` splits on the comma into two authors.
 
 ## 5. Steps: the design and the bugs
 
-`port/step-system.js` is the survivor of five rewrites. What the rewrites were for:
+The template's step system is the survivor of five rewrites. What the rewrites were for:
 
 1. **The script lived inside a slide, so it ran mid-parse.** `document.querySelectorAll('.slide')` cached at that moment held only the slides before it, and every forward jump past that slide failed a bounds check silently. Symptom: "slide 23 → 24 is broken", while backward worked and every scroll experiment (snap off, smooth off, `scrollIntoView`, deferring to rAF/`setTimeout`) changed nothing. Query the slide list at keypress time.
 2. **`scroll-snap-type: y mandatory` plus a smooth `scrollTo` more than one slide away lands on the wrong slide** (asked for 23, got 9). Only ever scroll ±1, exactly as the template does.
@@ -68,7 +72,7 @@ Also: `--author "Name:1,2"` splits on the comma into two authors.
 7. A mono hint line on one stepped slide (`→ / PgDn step · ← / PgUp back · ↕ slides · B all · R reset`) — nobody remembers three key behaviours cold in front of a room.
 8. **Make the outline a one-step slide.** One click reveals it, two move on: a silent clicker test that reads as a deliberate reveal.
 
-Test it headlessly (`port/test-steps.mjs`): Playwright sets `navigator.webdriver`,
+Test it headlessly (`scripts/test-steps.mjs`): Playwright sets `navigator.webdriver`,
 which is exactly the flag the script uses to switch into PDF mode, so spoof it
 back to `undefined` in an init script. Walk the deck with one key and print the
 steps per slide. Every animation bug above passed with a clean exit code.
@@ -97,7 +101,21 @@ steps per slide. Every animation bug above passed with a clean exit code.
 - LLM de-slop passes (claudish-to-english) flatten physics vocabulary; cherry-pick from their output, never apply it as a patch.
 - Take every number from the note's LaTeX tables, not from older talk PDFs: the CHEP/ML4Jets decks were two versions stale.
 
-## 9. Ask the other agent
+## 9. Comment mode (from the other agent's deck)
+
+`C` toggles review mode: a click drops a numbered pin at that point and opens
+an editor; pins and a side panel render only while the mode is on, so the
+deck and the PDF stay clean by construction. Records are percentages of the
+slide's own bounding rect (scale-invariant under the 1920×1080 wrapper), kept
+in `localStorage['slide-comments:<path>']` with a baked
+`<script id="baked-comments">` fallback written by the W-save hook, so a
+saved file carries its comments. Export Markdown (grouped by slide, resolved
+struck through) or JSON; import JSON. Guards that matter: never act on keys
+while an input is focused; ignore clicks on the panel, popup, pins and links;
+NaN-guard the rect before layout. Strip `#baked-comments` before you
+circulate a bundle.
+
+## 10. Ask the other agent
 
 A peer session that has shipped a deck answers concrete questions fast and
 well ("which pitfalls with click-stepping?") — two rounds of that shaped §5.

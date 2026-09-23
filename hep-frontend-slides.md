@@ -110,7 +110,7 @@ python3 {{FRONTEND_SLIDES_REPO_PATH}}/scripts/init-slides.py \
   --out /path/to/output.html
 ```
 
-> **Available skins**: `classic` (default PKU Red-Yellow-White), `bold`, `cobalt`, `voltage`, `botanical`, `jade`, `lavender`, `cyber`, `terminal`, `diy` (user-defined, requires `cp diy.css.example diy.css` first)
+> **Available skins**: `classic` (default PKU Red-Yellow-White), `paper` (ink on paper, serif headings, mono chrome), `bold`, `cobalt`, `voltage`, `botanical`, `jade`, `lavender`, `cyber`, `terminal`, `diy` (user-defined, requires `cp diy.css.example diy.css` first)
 > See `reference/PKU_SKINS.md` for details.
 
 Auto-generates: template copy, footer replacement, title slide, outline, transition + placeholder pages, `<!-- [Slide N] -->` markers.

@@ -16,6 +16,7 @@ description: 9 curated + 1 DIY color skin for PKU Academic Classic. Override :ro
 |---|------|----------|-------------------|-------------|---------------|------|
 | 00 | **classic** (default) | — | `#cc0000` | `#fefefc` | `#1a1a1a` | Times New Roman |
 | 01 | **bold** | 🌑 | `#FF5722` | `#2d2d2d` | `#ffffff` | Space Grotesk |
+| 00 | **paper** | 📄 | `#1a4480` | `#fcfcfb` | `#191c20` | EB Garamond + IBM Plex Mono |
 | 02 | **cobalt** | ☀️ | `#4361ee` | `#f7f0f0` | `#0a0a0a` | Manrope |
 | 03 | **voltage** | 🌑 | `#0066ff` | `#1a1a2e` | `#ffffff` | Manrope |
 | 04 | **botanical** | 🌑 | `#d4a574` | `#0f0f0f` | `#e8e4df` | IBM Plex Sans |
