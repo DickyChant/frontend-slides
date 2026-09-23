@@ -16,7 +16,7 @@ Source talk: Andrzej Novak · Phil Harris Lab @ MIT · CMS Higgs Workshop · 2 S
 - `docs/LAYOUT.md` — global chrome, themes, navigation, framework notes
 - `docs/SCENES.md` — all 28 visible scenes (ids, steps, layout)
 - `docs/ANIMATIONS.md` — timing / transition / fragment / SVG morph details
-- `docs/PORTING.md` — **what it took to port this into frontend-slides-PKU**:
+- `docs/PORTING.md` — **what it took to port this into frontend-slides**:
   the intent-to-engine mapping, layout and export lessons, the step system's
   five rewrites, choreography rules, and writing rules for an expert room
 

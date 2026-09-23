@@ -1,5 +1,7 @@
 <h1 align="center" style="background: linear-gradient(90deg, #cc0000, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: 'PingFang SC', sans-serif; font-size: 3rem; font-weight: 600; margin-bottom: 0.5rem; letter-spacing: -1px;">
-  ⚡️ Frontend Slides (PKU Edition) ⚡️
+  ⚡️ Frontend Slides ⚡️
+
+> Forked from the PKU edition by ky230 / De-Cristo (frontend-slides-PKU); rebranded and extended with the paper skin, step animation and comment mode.
 </h1>
 
 <p align="center" style="color: #64748b; font-size: 0.95rem; font-family: sans-serif; font-weight: 400;">
@@ -16,7 +18,7 @@
   <img src="https://img.shields.io/badge/Agent-Antigravity-10a37f?style=for-the-badge&logo=openai&logoColor=white" alt="Antigravity" />
   <img src="https://img.shields.io/badge/Agent-Claude_Code-d97757?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude" />
   <img src="https://img.shields.io/badge/Agent-Copilot-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Copilot" />
-  <img src="https://img.shields.io/badge/Template-PKU_Academic-cc0000?style=for-the-badge" alt="PKU Template" />
+  <img src="https://img.shields.io/badge/Template-Academic_Classic-1a4480?style=for-the-badge" alt="Academic Classic template" />
   <a href="https://github.com/zarazhangrui/frontend-slides/tree/main"><img src="https://img.shields.io/badge/Forked_From-zarazhangrui-fc6d26?style=for-the-badge&logo=github" alt="Original" /></a>
   <img src="https://img.shields.io/badge/License-MIT-005EB8?style=for-the-badge" alt="License" />
 </p>
@@ -25,11 +27,11 @@
 
 > [!NOTE]
 > 🎯 **Motivation & Live Demo** — Want to see what this framework can do? Check out this technical tutorial:
-> **[Frontend Slides PKU — Technical Tutorial](https://ky230.github.io/Html-slides-public/frontend_slides_intro/index.html)**
+> **[Frontend Slides — Technical Tutorial (upstream PKU edition)](https://ky230.github.io/Html-slides-public/frontend_slides_intro/index.html)**
 > 
 > **Credits** — This project is forked from [@zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides/tree/main).
 > 
-> **Additions** — Introduces **PKU Academic Classic** academic template: dynamic multi-logo injection, 10 color skins + DIY customization, strict typographic constraints and scaffold automation.
+> **Additions** — Introduces **Academic Classic** academic template: dynamic multi-logo injection, 10 color skins + DIY customization, strict typographic constraints and scaffold automation.
 > 
 > 💡 **Style Easter Egg:** Transition slide titles use `'Comic Sans MS'` — a tribute to the geeky contrast aesthetic from early CERN CMS reports.
 
@@ -89,7 +91,7 @@ https://github.com/user-attachments/assets/7acc9292-5fa3-424e-9d57-2e364f658788
 ```text
 /hep-frontend-slides
 
-> "Using PKU_CMS classic layout, create slides for next week's CMS group meeting:
+> "Using the classic layout, create slides for next week's CMS group meeting:
 > p1 covers Motivation, listing...
 > p2 explains the 120 ADC cut impact with a 6-plot comparison grid...
 > p3 summarizes conclusions with a highlight box..."
@@ -101,7 +103,7 @@ https://github.com/user-attachments/assets/7acc9292-5fa3-424e-9d57-2e364f658788
 
    | # | Question | Target Location | Default |
    |---|----------|----------------|---------|
-   | Q0 | Logo selection: auto-scans `assets/logos/`, asks which to use | Logo bar | PKU + CMS |
+   | Q0 | Logo selection: auto-scans `assets/logos/`, asks which to use | Logo bar | CMS |
    | Q1 | Main title? Keywords to highlight? | `<h1>` title-banner + footer-left | Required |
    | Q2 | Report type / meeting name? | `<h2>` title-banner + footer-right | Required |
    | Q3 | Author list? | author-info | Required |
@@ -121,7 +123,7 @@ https://github.com/user-attachments/assets/7acc9292-5fa3-424e-9d57-2e364f658788
 
 ### 📦 Built-in Slide Elements
 
-All content elements supported by the PKU Academic Classic template:
+All content elements supported by the Academic Classic template:
 
 | Element | Description | HTML Markup |
 |---------|-------------|-------------|
@@ -227,7 +229,7 @@ bash scripts/export-pdf.sh <input.html> [output.pdf] [options]
 **Stage 1 — Launch:**
 ```text
 /hep-frontend-slides
-Using PKU+CMS logos, create 20-page pre-approval slides titled "Search for BSM H→ττ",
+Using CERN+CMS logos, create 20-page pre-approval slides titled "Search for BSM H→ττ",
 highlight "BSM" and "H→ττ", use classic skin.
 ```
 
@@ -288,9 +290,9 @@ No manual file copying. `hep-frontend-slides.md` contains the full system constr
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/ky230/frontend-slides-PKU.git
+git clone --recurse-submodules https://github.com/DickyChant/frontend-slides.git
 ```
-*(Copy the absolute path of the folder, e.g., `/Users/name/frontend-slides-PKU`)*
+*(Copy the absolute path of the folder, e.g., `/Users/name/frontend-slides`)*
 
 ### 2️⃣ Copy the Install Prompt
 Copy the prompt matching your AI and paste it (the AI will auto-replace `{{FRONTEND_SLIDES_REPO_PATH}}` with your local path):
@@ -300,7 +302,7 @@ Copy the prompt matching your AI and paste it (the AI will auto-replace `{{FRONT
 
 ```text
 ⚠️ SYSTEM INSTRUCTION: 
-I have cloned the "frontend-slides-PKU" repository to my local machine. 
+I have cloned the "frontend-slides" repository to my local machine. 
 1. Locate the absolute path of the directory, or ask me for it.
 2. Read the `hep-frontend-slides.md` file located inside it.
 3. Install the rules into your global workflows/skills directory (or .cursorrules if applicable). 
@@ -312,7 +314,7 @@ I have cloned the "frontend-slides-PKU" repository to my local machine.
 <summary><b>GitHub Copilot Chat (VSCode)</b></summary>
 
 ```text
-@workspace I want to use a new workflow. Please read the `hep-frontend-slides.md` file from the cloned frontend-slides-PKU repository. Then, create a new file named `hep-frontend-slides.md` in my `.github/copilot-instructions/` directory (create the directory if it doesn't exist). Before writing, replace all `{{FRONTEND_SLIDES_REPO_PATH}}` placeholders with the absolute path of the directory you just read from.
+@workspace I want to use a new workflow. Please read the `hep-frontend-slides.md` file from the cloned frontend-slides repository. Then, create a new file named `hep-frontend-slides.md` in my `.github/copilot-instructions/` directory (create the directory if it doesn't exist). Before writing, replace all `{{FRONTEND_SLIDES_REPO_PATH}}` placeholders with the absolute path of the directory you just read from.
 ```
 </details>
 
@@ -320,7 +322,7 @@ I have cloned the "frontend-slides-PKU" repository to my local machine.
 <summary><b>Claude Code (CLI)</b></summary>
 
 ```bash
-claude "Read the hep-frontend-slides.md file from the frontend-slides-PKU directory. Copy its contents, replace all {{FRONTEND_SLIDES_REPO_PATH}} placeholders with its absolute path, and save it as .claude.md in my current working directory so these rules are automatically loaded."
+claude "Read the hep-frontend-slides.md file from the frontend-slides directory. Copy its contents, replace all {{FRONTEND_SLIDES_REPO_PATH}} placeholders with its absolute path, and save it as .claude.md in my current working directory so these rules are automatically loaded."
 ```
 </details>
 
@@ -336,10 +338,10 @@ graph TD
     SKILL["hep-frontend-slides.md<br>(AI Skill Entry Point)"]
     
     subgraph Reference["Reference Docs (AI reads)"]
-        SPEC["PKU_ACADEMIC_CLASSIC.md<br>Core HTML/CSS Spec"]
+        SPEC["ACADEMIC_CLASSIC.md<br>Core HTML/CSS Spec"]
         FT["FINE_TUNING.md<br>12 Tunable Parameters"]
         FIG["FIGURE_LAYOUTS.md<br>Figure Grid Presets"]
-        SKINREF["PKU_SKINS.md<br>10 Color Skins"]
+        SKINREF["SKINS.md<br>10 Color Skins"]
         TERM["TERMINAL_BOX.md<br>Terminal Components"]
     end
     
@@ -384,7 +386,7 @@ Choose a color skin via the `--skin` parameter. All skins share the same HTML st
 
 | # | | Skin | `--theme-primary` | `--theme-accent` | Style | Preview |
 |---|---|------|-------------------|-----------------|-------|---------|
-| 1 | 🏛️ | `classic` | `#cc0000` | `#ffff00` | PKU Red-Yellow-White (default) | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/classic/index.html) |
+| 1 | 🏛️ | `classic` | `#cc0000` | `#ffff00` | Red-Yellow-White (default) | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/classic/index.html) |
 | 2 | 🔥 | `bold` | `#ec5f18` | `#f3ecdb` | Orange cards + dark gradient | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/bold/index.html) |
 | 3 | 💎 | `cobalt` | `#4361ee` | `#f6f606` | Cobalt blue + bright yellow | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/cobalt/index.html) |
 | 4 | ⚡ | `voltage` | `#0066ff` | `#d0f804` | Electric blue + neon yellow | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/voltage/index.html) |
@@ -404,7 +406,7 @@ Place logo images in `assets/logos/`:
 
 ```
 assets/logos/
-├── PKU_logo.jpeg          # Built-in (git tracked)
+├── CERN_logo.jpeg          # Built-in (git tracked)
 ├── CMS_logo.png           # Built-in (git tracked)
 ├── CEPC_logo.png          # Built-in (git tracked)
 ├── CERN_logo.png          # Built-in (git tracked)
@@ -424,7 +426,7 @@ cp diy.css.example diy.css    # ← diy.css is gitignored, edit freely
 Edit the color variables in `diy.css`, then use:
 
 ```bash
-python3 scripts/init-slides.py --skin diy --logos YOUR_Lab_logo.png PKU_logo.jpeg ...
+python3 scripts/init-slides.py --skin diy --logos YOUR_Lab_logo.png CERN_logo.jpeg ...
 ```
 
 > 💡 `diy.css.example` includes detailed comments for every adjustable parameter — each line explains which slide element it controls. No documentation needed.

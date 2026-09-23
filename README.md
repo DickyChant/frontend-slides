@@ -1,5 +1,7 @@
 <h1 align="center" style="background: linear-gradient(90deg, #cc0000, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: 'PingFang SC', sans-serif; font-size: 3rem; font-weight: 600; margin-bottom: 0.5rem; letter-spacing: -1px;">
-  ⚡️ Frontend Slides (PKU Edition) ⚡️
+  ⚡️ Frontend Slides ⚡️
+
+> 本仓库源自 ky230 / De-Cristo 的 PKU 版本（frontend-slides-PKU），去除了校名品牌并扩展了引擎：paper 皮肤、分步动画、评论模式。
 </h1>
 
 <p align="center" style="color: #64748b; font-size: 0.95rem; font-family: sans-serif; font-weight: 400;">
@@ -16,7 +18,7 @@
   <img src="https://img.shields.io/badge/Agent-Antigravity-10a37f?style=for-the-badge&logo=openai&logoColor=white" alt="Antigravity" />
   <img src="https://img.shields.io/badge/Agent-Claude_Code-d97757?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude" />
   <img src="https://img.shields.io/badge/Agent-Copilot-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Copilot" />
-  <img src="https://img.shields.io/badge/Template-PKU_Academic-cc0000?style=for-the-badge" alt="PKU Template" />
+  <img src="https://img.shields.io/badge/Template-Academic_Classic-1a4480?style=for-the-badge" alt="Academic Classic template" />
   <a href="https://github.com/zarazhangrui/frontend-slides/tree/main"><img src="https://img.shields.io/badge/Forked_From-zarazhangrui-fc6d26?style=for-the-badge&logo=github" alt="Original" /></a>
   <img src="https://img.shields.io/badge/License-MIT-005EB8?style=for-the-badge" alt="License" />
 </p>
@@ -25,11 +27,11 @@
 
 > [!NOTE]
 > 🎯 **Motivation & Live Demo** — 想了解这个框架能做什么？看这份技术教程 slides：
-> **[Frontend Slides PKU — Technical Tutorial](https://ky230.github.io/Html-slides-public/frontend_slides_intro/index.html)**
+> **[Frontend Slides — Technical Tutorial (upstream PKU edition)](https://ky230.github.io/Html-slides-public/frontend_slides_intro/index.html)**
 > 
 > **致谢** — 本项目分叉自 [@zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides/tree/main)。
 > 
-> **新增内容** — 引入 **PKU Academic Classic** 学术模板：动态多 Logo 注入、10 款配色皮肤 + DIY 自定义、严格排版约束与脚手架自动化。
+> **新增内容** — 引入 **Academic Classic** 学术模板：动态多 Logo 注入、10 款配色皮肤 + DIY 自定义、严格排版约束与脚手架自动化。
 > 
 > 💡 **风格彩蛋：** 过渡页大标题使用了 `'Comic Sans MS'` —— 致敬 CERN CMS 早期报告中的极客反差美学。
 
@@ -89,7 +91,7 @@ https://github.com/user-attachments/assets/7acc9292-5fa3-424e-9d57-2e364f658788
 ```text
 /hep-frontend-slides
 
-> "使用 PKU_CMS 经典版式帮我做一份下周 CMS 开组会的幻灯片：
+> "使用经典版式帮我做一份下周 CMS 开组会的幻灯片：
 > p1 主要讲 Motivation，需要罗列...
 > p2 讲解 120 ADC cut 的影响，放一张 6 图对比网格...
 > p3 总结结论，加一个高亮框..."
@@ -101,7 +103,7 @@ https://github.com/user-attachments/assets/7acc9292-5fa3-424e-9d57-2e364f658788
 
    | # | 问题 | 对应位置 | 默认值 |
    |---|------|---------|--------|
-   | Q0 | 选择 Logo：自动扫描 `assets/logos/`，问你用哪些 | Logo 栏 | PKU + CMS |
+   | Q0 | 选择 Logo：自动扫描 `assets/logos/`，问你用哪些 | Logo 栏 | CMS |
    | Q1 | 报告主标题？哪些关键词 highlight？ | `<h1>` title-banner + footer-left | 无（必填） |
    | Q2 | 报告类型/会议名称？ | `<h2>` title-banner + footer-right | 无（必填） |
    | Q3 | 作者列表？ | author-info | 无（必填） |
@@ -121,7 +123,7 @@ https://github.com/user-attachments/assets/7acc9292-5fa3-424e-9d57-2e364f658788
 
 ### 📦 Slide 内置元素一览
 
-以下是 PKU Academic Classic 模板支持的全部内容元素：
+以下是 Academic Classic 模板支持的全部内容元素：
 
 | 元素 | 说明 | HTML 标记 |
 |------|------|-----------|
@@ -227,7 +229,7 @@ bash scripts/export-pdf.sh <input.html> [output.pdf] [options]
 **Stage 1 — 启动：**
 ```text
 /hep-frontend-slides
-使用 PKU+CMS logo 做一份 20 页的 pre-approval slides，标题是 "Search for BSM H→ττ"，
+使用 CERN+CMS logo 做一份 20 页的 pre-approval slides，标题是 "Search for BSM H→ττ"，
 高亮 "BSM" 和 "H→ττ"，用 classic 配色。
 ```
 
@@ -289,9 +291,9 @@ cd /path/to/your-pages-repo && git add . && git commit -m "add slides" && git pu
 ### 1️⃣ 克隆仓库
 在你的电脑或服务器上将本仓库 Clone 下来：
 ```bash
-git clone https://github.com/ky230/frontend-slides-PKU.git
+git clone --recurse-submodules https://github.com/DickyChant/frontend-slides.git
 ```
-*(操作完后，复制记录该文件夹的绝对路径，例如 `/Users/name/frontend-slides-PKU`)*
+*(操作完后，复制记录该文件夹的绝对路径，例如 `/Users/name/frontend-slides`)*
 
 ### 2️⃣ 复制安装提示词
 复制以下对应你所使用的 AI 的系统 Prompt 并直接甩给它（AI 会自动将 `{{FRONTEND_SLIDES_REPO_PATH}}` 替换为你告诉它的本地绝对路径）：
@@ -301,7 +303,7 @@ git clone https://github.com/ky230/frontend-slides-PKU.git
 
 ```text
 ⚠️ SYSTEM INSTRUCTION: 
-I have cloned the "frontend-slides-PKU" repository to my local machine. 
+I have cloned the "frontend-slides" repository to my local machine. 
 1. Locate the absolute path of the directory, or ask me for it.
 2. Read the `hep-frontend-slides.md` file located inside it.
 3. Install the rules into your global workflows/skills directory (or .cursorrules if applicable). 
@@ -313,7 +315,7 @@ I have cloned the "frontend-slides-PKU" repository to my local machine.
 <summary><b>GitHub Copilot Chat（VSCode）</b></summary>
 
 ```text
-@workspace I want to use a new workflow. Please read the `hep-frontend-slides.md` file from the cloned frontend-slides-PKU repository. Then, create a new file named `hep-frontend-slides.md` in my `.github/copilot-instructions/` directory (create the directory if it doesn't exist). Before writing, replace all `{{FRONTEND_SLIDES_REPO_PATH}}` placeholders with the absolute path of the directory you just read from.
+@workspace I want to use a new workflow. Please read the `hep-frontend-slides.md` file from the cloned frontend-slides repository. Then, create a new file named `hep-frontend-slides.md` in my `.github/copilot-instructions/` directory (create the directory if it doesn't exist). Before writing, replace all `{{FRONTEND_SLIDES_REPO_PATH}}` placeholders with the absolute path of the directory you just read from.
 ```
 </details>
 
@@ -321,7 +323,7 @@ I have cloned the "frontend-slides-PKU" repository to my local machine.
 <summary><b>Claude Code（CLI 命令行）</b></summary>
 
 ```bash
-claude "Read the hep-frontend-slides.md file from the frontend-slides-PKU directory. Copy its contents, replace all {{FRONTEND_SLIDES_REPO_PATH}} placeholders with its absolute path, and save it as .claude.md in my current working directory so these rules are automatically loaded."
+claude "Read the hep-frontend-slides.md file from the frontend-slides directory. Copy its contents, replace all {{FRONTEND_SLIDES_REPO_PATH}} placeholders with its absolute path, and save it as .claude.md in my current working directory so these rules are automatically loaded."
 ```
 </details>
 
@@ -337,10 +339,10 @@ graph TD
     SKILL["hep-frontend-slides.md<br>(AI Skill Entry Point)"]
     
     subgraph Reference["Reference Docs (AI reads)"]
-        SPEC["PKU_ACADEMIC_CLASSIC.md<br>Core HTML/CSS Spec"]
+        SPEC["ACADEMIC_CLASSIC.md<br>Core HTML/CSS Spec"]
         FT["FINE_TUNING.md<br>12 Tunable Parameters"]
         FIG["FIGURE_LAYOUTS.md<br>Figure Grid Presets"]
-        SKINREF["PKU_SKINS.md<br>10 Color Skins"]
+        SKINREF["SKINS.md<br>10 Color Skins"]
         TERM["TERMINAL_BOX.md<br>Terminal Components"]
     end
     
@@ -385,7 +387,7 @@ graph TD
 
 | # | | Skin | `--theme-primary` | `--theme-accent` | 风格 | 预览 |
 |---|---|------|-------------------|-----------------|------|------|
-| 1 | 🏛️ | `classic` | `#cc0000` | `#ffff00` | 北大红黄白（默认） | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/classic/index.html) |
+| 1 | 🏛️ | `classic` | `#cc0000` | `#ffff00` | 红黄白（默认） | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/classic/index.html) |
 | 2 | 🔥 | `bold` | `#ec5f18` | `#f3ecdb` | 橙色卡片 + 深色渐变 | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/bold/index.html) |
 | 3 | 💎 | `cobalt` | `#4361ee` | `#f6f606` | 钴蓝 + 明黄 | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/cobalt/index.html) |
 | 4 | ⚡ | `voltage` | `#0066ff` | `#d0f804` | 电离蓝 + 荧光黄 | [Preview](https://ky230.github.io/Html-slides-public/Hfrontend-slides-PKU-skin/voltage/index.html) |
@@ -405,7 +407,7 @@ graph TD
 
 ```
 assets/logos/
-├── PKU_logo.jpeg          # 内置（git 跟踪）
+├── CERN_logo.jpeg          # 内置（git 跟踪）
 ├── CMS_logo.png           # 内置（git 跟踪）
 ├── CEPC_logo.png          # 内置（git 跟踪）
 ├── CERN_logo.png          # 内置（git 跟踪）
@@ -425,7 +427,7 @@ cp diy.css.example diy.css    # ← diy.css 不入库，随心改
 编辑 `diy.css` 中的颜色变量，然后使用：
 
 ```bash
-python3 scripts/init-slides.py --skin diy --logos YOUR_Lab_logo.png PKU_logo.jpeg ...
+python3 scripts/init-slides.py --skin diy --logos YOUR_Lab_logo.png CERN_logo.jpeg ...
 ```
 
 > 💡 `diy.css.example` 已包含所有可调参数的详细注释，每一行都标注了对应 slide 中的哪个元素。无需查阅文档即可上手。

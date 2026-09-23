@@ -1,8 +1,8 @@
-# Porting the κc layout into frontend-slides-PKU — what actually worked
+# Porting the κc layout into frontend-slides — what actually worked
 
 Field notes from building a 37-slide, in-person CMS status-update deck
 (HGCal generative fast simulation, Phase-2 Software Days, September 2026) on
-the PKU engine, styled by intent after the κc workshop deck documented in
+the frontend-slides engine, styled by intent after the κc workshop deck documented in
 this directory. Everything below was learned by shipping a version that was
 wrong first. The reusable pieces are built into the engine on this branch:
 `assets/skins/paper.css`, the step system and comment mode in
@@ -11,10 +11,10 @@ wrong first. The reusable pieces are built into the engine on this branch:
 ## 1. Port intent, not markup
 
 The κc deck is a custom scene engine (`#scene/step` URLs, inline `SCENES`
-table). The PKU engine is a fixed 1920×1080 scroll-snap scroller of
+table). The frontend-slides engine is a fixed 1920×1080 scroll-snap scroller of
 `<section class="slide">`. These do not map one-to-one, so port the *effects*:
 
-| κc intent (docs/) | PKU realisation |
+| κc intent (docs/) | engine realisation |
 |---|---|
 | paper theme, serif headings, mono chrome | `assets/skins/paper.css` (`--skin paper`) |
 | 650 ms scene-in, 14 px rise | `--duration-normal: 0.65s`, `.reveal { transform: translateY(14px) }` |

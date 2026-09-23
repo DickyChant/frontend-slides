@@ -1,9 +1,9 @@
 ---
 name: hep-frontend-slides
-description: 🏛️ PKU Academic Classic HTML Slides — zero-dependency, fixed 1920×1080 canvas academic presentations. For CMS/CEPC group meetings, conference talks, pre-approval presentations, etc. Supports 10 color skins + DIY.
+description: 🏛️ Academic Classic HTML Slides — zero-dependency, fixed 1920×1080 canvas academic presentations. For CMS/CEPC group meetings, conference talks, pre-approval presentations, etc. Supports 10 color skins + DIY.
 ---
 
-# PKU Academic Classic — HTML Slides Maker
+# Academic Classic — HTML Slides Maker
 
 Fixed 1920×1080 canvas, 10 color skins + DIY custom skin for academic HTML presentations.
 
@@ -27,10 +27,10 @@ Fixed 1920×1080 canvas, 10 color skins + DIY custom skin for academic HTML pres
 
 | File | Purpose | When to Read |
 |------|---------|:---:|
-| `reference/PKU_ACADEMIC_CLASSIC.md` | Core spec: class index, HTML patterns, EAC rules | **Must read before starting** |
+| `reference/ACADEMIC_CLASSIC.md` | Core spec: class index, HTML patterns, EAC rules | **Must read before starting** |
 | `reference/FINE_TUNING.md` | Quick reference for 12 commonly-tuned parameters | Fine-tuning phase |
 | `reference/FIGURE_LAYOUTS.md` | `.fig` figure layout presets | Figure-only pages |
-| `reference/PKU_SKINS.md` | 10 color skin CSS specs | Skin selection |
+| `reference/SKINS.md` | 10 color skin CSS specs | Skin selection |
 | `reference/TERMINAL_BOX.md` | Terminal component architecture, syntax coloring, animation | When using terminals |
 | `scripts/init-slides.py` | CLI scaffold generator (with `--skin` `--logos`) | Step 1 |
 | `scripts/renumber-slides.py` | Renumber slides after add/delete (markers + figure dirs) | After structural changes |
@@ -73,7 +73,7 @@ After the user specifies `{path}/{name}.html`, automatically create:
 
 ### 1.1 Pre-flight
 
-Must complete `PKU_ACADEMIC_CLASSIC.md` §0 Q0–Q10 before generating HTML:
+Must complete `ACADEMIC_CLASSIC.md` §0 Q0–Q10 before generating HTML:
 
 | # | Question | Required? |
 |---|----------|:---:|
@@ -96,12 +96,12 @@ Must complete `PKU_ACADEMIC_CLASSIC.md` §0 Q0–Q10 before generating HTML:
 
 ```bash
 python3 {{FRONTEND_SLIDES_REPO_PATH}}/scripts/init-slides.py \
-  --logos PKU_logo.jpeg CMS_logo.png \
+  --logos CMS_logo.png CERN_logo.png \
   --title "Report Title" \
   --subtitle "Optional Subtitle" \
   --author "Author1:1, Author2:2" \
   --speaker "Author1" \
-  --affiliations "Peking University (CN)" "Sapienza (IT)" \
+  --affiliations "Your Institute (CC)" "Sapienza (IT)" \
   --date "Mar 20th 2026" \
   --event "TB meeting" \
   --highlight "keyword1" "keyword2" \
@@ -110,8 +110,8 @@ python3 {{FRONTEND_SLIDES_REPO_PATH}}/scripts/init-slides.py \
   --out /path/to/output.html
 ```
 
-> **Available skins**: `classic` (default PKU Red-Yellow-White), `paper` (ink on paper, serif headings, mono chrome), `bold`, `cobalt`, `voltage`, `botanical`, `jade`, `lavender`, `cyber`, `terminal`, `diy` (user-defined, requires `cp diy.css.example diy.css` first)
-> See `reference/PKU_SKINS.md` for details.
+> **Available skins**: `classic` (default Red-Yellow-White), `paper` (ink on paper, serif headings, mono chrome), `bold`, `cobalt`, `voltage`, `botanical`, `jade`, `lavender`, `cyber`, `terminal`, `diy` (user-defined, requires `cp diy.css.example diy.css` first)
+> See `reference/SKINS.md` for details.
 
 Auto-generates: template copy, footer replacement, title slide, outline, transition + placeholder pages, `<!-- [Slide N] -->` markers.
 
@@ -145,7 +145,7 @@ For fine-tuning, refer directly to the specs in `reference/FINE_TUNING.md`, and 
 **Protocol:**
 1. **Receive feedback** — user specifies per-page changes
 2. **Locate** — `grep_search` for `<!-- [Slide N] -->`, `view_file` for context
-3. **Execute** — `replace_file_content` for precise replacement, following `PKU_ACADEMIC_CLASSIC.md`
+3. **Execute** — `replace_file_content` for precise replacement, following `ACADEMIC_CLASSIC.md`
 4. **Structural changes** (add/delete slides) — after completion, run:
    ```bash
    python3 {{FRONTEND_SLIDES_REPO_PATH}}/scripts/renumber-slides.py <input.html>

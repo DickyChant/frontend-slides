@@ -1,6 +1,6 @@
 # Terminal Box Reference
 
-> Mac-style terminal component for code display and command animation in PKU slides.
+> Mac-style terminal component for code display and command animation in slides.
 
 ---
 

@@ -1,12 +1,12 @@
 ---
-name: PKU Color Skins
-description: 9 curated + 1 DIY color skin for PKU Academic Classic. Override :root variables to change header/footer, background, text, and accent colors.
+name: Color Skins
+description: 9 curated + 1 DIY color skin for Academic Classic. Override :root variables to change header/footer, background, text, and accent colors.
 ---
 
-# PKU Color Skins Reference
+# Color Skins Reference
 
 > **Usage**: `python3 init-slides.py --skin <name>` injects the skin CSS into the template.
-> Default `classic` = PKU Red-Yellow-White (no overrides).
+> Default `classic` = Red-Yellow-White (no overrides).
 
 ---
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-init-slides.py — PKU Academic Classic Slide Harness Scaffold
+init-slides.py — Academic Classic Slide Harness Scaffold
 
 Initialize HTML slide skeleton from empty template.
 Auto-generates: Title Slide, Outline, Transition + Content placeholder pages per Section.
 
 Usage:
     python3 init-slides.py \\
-        --logos PKU_logo.jpeg CMS_logo.png \\
+        --logos CMS_logo.png CERN_logo.png \\
         --title "BTL time resolution..." \\
         --author "Leyan Li" \\
         --event "TB meeting" \\
@@ -33,17 +33,17 @@ SKIN_CHOICES = sorted(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="PKU Academic Classic Slide Harness — scaffold initialization"
+        description="Academic Classic Slide Harness — scaffold initialization"
     )
     parser.add_argument(
-        "--logos", nargs="*", default=["PKU_logo.jpeg", "CMS_logo.png"],
-        help="Logo filenames (in assets/logos/), left-to-right order, default: PKU + CMS"
+        "--logos", nargs="*", default=["CMS_logo.png"],
+        help="Logo filenames (in assets/logos/), left-to-right order, default: CMS"
     )
     parser.add_argument("--title", required=True, help="Report main title")
     parser.add_argument("--subtitle", default="", help="Subtitle (optional)")
     parser.add_argument("--author", required=True, help="Author list (comma-separated, use :N for affiliation number, e.g. 'Alice:1, Bob:2')")
     parser.add_argument("--speaker", default="Leyan Li", help="Speaker (auto-underlined on title, default: Leyan Li)")
-    parser.add_argument("--affiliations", nargs="+", default=["Peking University (CN)"], help="Affiliation list (auto-numbered in order, e.g. 'PKU (CN)' 'INFN (IT)')")
+    parser.add_argument("--affiliations", nargs="+", default=["Your Institute (CC)"], help="Affiliation list (auto-numbered in order, e.g. 'Your Institute (CN)' 'INFN (IT)')")
     parser.add_argument("--date", default="", help="Report date")
     parser.add_argument("--reference", default="", help="Reference citation (format: 'nickname|url' or plain url)")
     parser.add_argument("--event", required=True, help="Meeting/report type (shown in footer-right)")
@@ -58,7 +58,7 @@ def main():
     )
     parser.add_argument(
         "--skin", default="classic", choices=SKIN_CHOICES,
-        help="Color skin (default: classic = PKU Red-Yellow-White; paper = ink-on-paper serif look)"
+        help="Color skin (default: classic = Red-Yellow-White; paper = ink-on-paper serif look)"
     )
     parser.add_argument(
         "--lang", default="en",
