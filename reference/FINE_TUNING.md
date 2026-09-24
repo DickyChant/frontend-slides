@@ -110,7 +110,7 @@
 
 ## 7.5. Inline Text Highlight
 
-Use `.highlight-accent` to highlight key terms inside bullet text. Color follows `--theme-highlight` (default: PKU-Red `#cc0000` on light backgrounds).
+Use `.highlight-accent` to highlight key terms inside bullet text. Color follows `--theme-highlight` (default: classic red `#cc0000` on light backgrounds).
 
 ```html
 <!-- Basic highlight -->

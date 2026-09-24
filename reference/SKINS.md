@@ -1,12 +1,12 @@
 ---
-name: PKU Color Skins
-description: 9 curated + 1 DIY color skin for PKU Academic Classic. Override :root variables to change header/footer, background, text, and accent colors.
+name: Color Skins
+description: 9 curated + 1 DIY color skin for Academic Classic. Override :root variables to change header/footer, background, text, and accent colors.
 ---
 
-# PKU Color Skins Reference
+# Color Skins Reference
 
 > **Usage**: `python3 init-slides.py --skin <name>` injects the skin CSS into the template.
-> Default `classic` = PKU Red-Yellow-White (no overrides).
+> Default `classic` = Red-Yellow-White (no overrides).
 
 ---
 
@@ -16,6 +16,7 @@ description: 9 curated + 1 DIY color skin for PKU Academic Classic. Override :ro
 |---|------|----------|-------------------|-------------|---------------|------|
 | 00 | **classic** (default) | — | `#cc0000` | `#fefefc` | `#1a1a1a` | Times New Roman |
 | 01 | **bold** | 🌑 | `#FF5722` | `#2d2d2d` | `#ffffff` | Space Grotesk |
+| 00 | **paper** | 📄 | `#1a4480` | `#fcfcfb` | `#191c20` | EB Garamond + IBM Plex Mono |
 | 02 | **cobalt** | ☀️ | `#4361ee` | `#f7f0f0` | `#0a0a0a` | Manrope |
 | 03 | **voltage** | 🌑 | `#0066ff` | `#1a1a2e` | `#ffffff` | Manrope |
 | 04 | **botanical** | 🌑 | `#d4a574` | `#0f0f0f` | `#e8e4df` | IBM Plex Sans |

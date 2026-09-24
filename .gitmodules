@@ -1,0 +1,6 @@
+[submodule "claudish-to-english"]
+	path = claudish-to-english
+	url = https://github.com/DickyChant/claudish-to-english.git
+[submodule "plotlyhep"]
+	path = plotlyhep
+	url = https://github.com/DickyChant/plotlyhep.git

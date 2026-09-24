@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-init-slides.py — PKU Academic Classic Slide Harness Scaffold
+init-slides.py — Academic Classic Slide Harness Scaffold
 
 Initialize HTML slide skeleton from empty template.
 Auto-generates: Title Slide, Outline, Transition + Content placeholder pages per Section.
 
 Usage:
     python3 init-slides.py \\
-        --logos PKU_logo.jpeg CMS_logo.png \\
+        --logos CMS_logo.png CERN_logo.png \\
         --title "BTL time resolution..." \\
         --author "Leyan Li" \\
         --event "TB meeting" \\
@@ -33,17 +33,17 @@ SKIN_CHOICES = sorted(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="PKU Academic Classic Slide Harness — scaffold initialization"
+        description="Academic Classic Slide Harness — scaffold initialization"
     )
     parser.add_argument(
-        "--logos", nargs="*", default=["PKU_logo.jpeg", "CMS_logo.png"],
-        help="Logo filenames (in assets/logos/), left-to-right order, default: PKU + CMS"
+        "--logos", nargs="*", default=["CMS_logo.png"],
+        help="Logo filenames (in assets/logos/), left-to-right order, default: CMS"
     )
     parser.add_argument("--title", required=True, help="Report main title")
     parser.add_argument("--subtitle", default="", help="Subtitle (optional)")
     parser.add_argument("--author", required=True, help="Author list (comma-separated, use :N for affiliation number, e.g. 'Alice:1, Bob:2')")
     parser.add_argument("--speaker", default="Leyan Li", help="Speaker (auto-underlined on title, default: Leyan Li)")
-    parser.add_argument("--affiliations", nargs="+", default=["Peking University (CN)"], help="Affiliation list (auto-numbered in order, e.g. 'PKU (CN)' 'INFN (IT)')")
+    parser.add_argument("--affiliations", nargs="+", default=["Your Institute (CC)"], help="Affiliation list (auto-numbered in order, e.g. 'Your Institute (CN)' 'INFN (IT)')")
     parser.add_argument("--date", default="", help="Report date")
     parser.add_argument("--reference", default="", help="Reference citation (format: 'nickname|url' or plain url)")
     parser.add_argument("--event", required=True, help="Meeting/report type (shown in footer-right)")
@@ -58,7 +58,11 @@ def main():
     )
     parser.add_argument(
         "--skin", default="classic", choices=SKIN_CHOICES,
-        help="Color skin (default: classic = PKU Red-Yellow-White)"
+        help="Color skin (default: classic = Red-Yellow-White; paper = ink-on-paper serif look)"
+    )
+    parser.add_argument(
+        "--lang", default="en",
+        help="HTML lang attribute (default: en; use zh-CN for a Chinese deck)"
     )
     args = parser.parse_args()
 
@@ -135,7 +139,11 @@ def main():
         )
 
     # 4. Replace placeholders (footer also uses highlighted title)
+    # <title> gets the plain text (the tab would otherwise show literal <span> tags);
+    # the banner gets the highlighted version
+    html = html.replace("<title>{{TITLE_PLACEHOLDER}}</title>", f"<title>{args.title}</title>")
     html = html.replace("{{TITLE_PLACEHOLDER}}", highlighted_title)
+    html = html.replace("{{LANG_PLACEHOLDER}}", args.lang)
     html = html.replace("{{AUTHOR_PLACEHOLDER}}", args.speaker)
     html = html.replace("{{EVENT_PLACEHOLDER}}", args.event)
 
@@ -219,6 +227,7 @@ def main():
         slide_idx += 1
 
         # --- Generate per Section: transition + content placeholder pages ---
+        part_no = 0
         for sec in args.outline:
             parts = sec.rsplit(":", 1)
             title = parts[0].strip()
@@ -226,10 +235,17 @@ def main():
             if len(parts) > 1 and parts[1].isdigit():
                 count = int(parts[1])
 
-            # Transition page
+            # Transition page. The gate eyebrow ("PART 3" / "APPENDIX") is an inline
+            # custom property read by skins that render .transition-text::before;
+            # CSS counters would not survive the headless PDF export.
+            if title.lower().replace(" ", "") in ("backup", "appendix", "spare", "backupslides"):
+                act = "Appendix"
+            else:
+                part_no += 1
+                act = f"Part {part_no}"
             injections.append(f"""
     <!-- [Slide {slide_idx}] Transition: {title} -->
-    <section class="slide transition-slide" data-header="hidden" data-title="">
+    <section class="slide transition-slide" data-header="hidden" data-title="" style="--act: '{act}';">
         <div class="transition-text reveal d1">{title}</div>
     </section>""")
             slide_idx += 1

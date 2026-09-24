@@ -1,11 +1,11 @@
 ---
 name: hep-frontend-slides
-description: 🏛️ PKU Academic Classic HTML Slides — zero-dependency, fixed 1920×1080 canvas academic presentations. For CMS/CEPC group meetings, conference talks, pre-approval presentations, etc. Supports 10 color skins + DIY.
+description: 🏛️ Academic Classic HTML Slides — zero-dependency, fixed 1920×1080 canvas academic presentations for HEP group meetings, conference talks and pre-approval presentations. 11 color skins (incl. the serif `paper` look) + DIY, step-by-step reveals driven by the arrow keys or a clicker, review comments (C) that travel inside the saved file, PDF export.
 ---
 
-# PKU Academic Classic — HTML Slides Maker
+# Academic Classic — HTML Slides Maker
 
-Fixed 1920×1080 canvas, 10 color skins + DIY custom skin for academic HTML presentations.
+Fixed 1920×1080 canvas, 11 color skins + DIY custom skin for academic HTML presentations, with step reveals, review comments and PDF export built into the engine.
 
 **Activate:** `/hep-frontend-slides` or "make slides" / "academic presentation"
 
@@ -27,15 +27,21 @@ Fixed 1920×1080 canvas, 10 color skins + DIY custom skin for academic HTML pres
 
 | File | Purpose | When to Read |
 |------|---------|:---:|
-| `reference/PKU_ACADEMIC_CLASSIC.md` | Core spec: class index, HTML patterns, EAC rules | **Must read before starting** |
+| `reference/ACADEMIC_CLASSIC.md` | Core spec: class index, HTML patterns, EAC rules | **Must read before starting** |
 | `reference/FINE_TUNING.md` | Quick reference for 12 commonly-tuned parameters | Fine-tuning phase |
 | `reference/FIGURE_LAYOUTS.md` | `.fig` figure layout presets | Figure-only pages |
-| `reference/PKU_SKINS.md` | 10 color skin CSS specs | Skin selection |
+| `reference/SKINS.md` | 11 color skin CSS specs | Skin selection |
+| `reference/FIELD_NOTES.md` | Lessons from a real 37-slide talk: layout and export pitfalls, step choreography, writing rules for expert rooms | **Read before fine-tuning a talk** |
+| `reference/animation-patterns.md` | Generic CSS animation patterns by feeling | When adding motion |
+| `reference/captures/kappac-hig-workshop-2026/` | A captured reference deck layout (scenes, chrome, animations) | Planning a deck slide by slide |
 | `reference/TERMINAL_BOX.md` | Terminal component architecture, syntax coloring, animation | When using terminals |
-| `scripts/init-slides.py` | CLI scaffold generator (with `--skin` `--logos`) | Step 1 |
+| `scripts/init-slides.py` | CLI scaffold generator (`--skin` `--logos` `--lang`; gates get `--act` labels) | Step 1 |
 | `scripts/renumber-slides.py` | Renumber slides after add/delete (markers + figure dirs) | After structural changes |
 | `scripts/bundle-html.py` | Base64 bundling | When user says bundle |
 | `scripts/export-pdf.sh` | PDF export (supports `--dpr N`) | When user says export PDF |
+| `scripts/test-steps.mjs` | Headless walk proving every step and slide spill works | After adding steps |
+| `plotlyhep/` (submodule) | mplhep-styled Plotly figures and matplotlib ↔ Plotly conversion, pixel-checked | Making plots for slides |
+| `claudish-to-english/` (submodule) | Prose de-slop pass for slide copy — cherry-pick its output | Language pass |
 
 All paths relative to: `{{FRONTEND_SLIDES_REPO_PATH}}/`
 
@@ -73,7 +79,7 @@ After the user specifies `{path}/{name}.html`, automatically create:
 
 ### 1.1 Pre-flight
 
-Must complete `PKU_ACADEMIC_CLASSIC.md` §0 Q0–Q10 before generating HTML:
+Must complete `ACADEMIC_CLASSIC.md` §0 Q0–Q10 before generating HTML:
 
 | # | Question | Required? |
 |---|----------|:---:|
@@ -96,12 +102,12 @@ Must complete `PKU_ACADEMIC_CLASSIC.md` §0 Q0–Q10 before generating HTML:
 
 ```bash
 python3 {{FRONTEND_SLIDES_REPO_PATH}}/scripts/init-slides.py \
-  --logos PKU_logo.jpeg CMS_logo.png \
+  --logos CMS_logo.png CERN_logo.png \
   --title "Report Title" \
   --subtitle "Optional Subtitle" \
   --author "Author1:1, Author2:2" \
   --speaker "Author1" \
-  --affiliations "Peking University (CN)" "Sapienza (IT)" \
+  --affiliations "Your Institute (CC)" "Sapienza (IT)" \
   --date "Mar 20th 2026" \
   --event "TB meeting" \
   --highlight "keyword1" "keyword2" \
@@ -110,8 +116,8 @@ python3 {{FRONTEND_SLIDES_REPO_PATH}}/scripts/init-slides.py \
   --out /path/to/output.html
 ```
 
-> **Available skins**: `classic` (default PKU Red-Yellow-White), `bold`, `cobalt`, `voltage`, `botanical`, `jade`, `lavender`, `cyber`, `terminal`, `diy` (user-defined, requires `cp diy.css.example diy.css` first)
-> See `reference/PKU_SKINS.md` for details.
+> **Available skins**: `classic` (default Red-Yellow-White), `paper` (ink on paper, serif headings, mono chrome), `bold`, `cobalt`, `voltage`, `botanical`, `jade`, `lavender`, `cyber`, `terminal`, `diy` (user-defined, requires `cp diy.css.example diy.css` first)
+> See `reference/SKINS.md` for details.
 
 Auto-generates: template copy, footer replacement, title slide, outline, transition + placeholder pages, `<!-- [Slide N] -->` markers.
 
@@ -145,7 +151,7 @@ For fine-tuning, refer directly to the specs in `reference/FINE_TUNING.md`, and 
 **Protocol:**
 1. **Receive feedback** — user specifies per-page changes
 2. **Locate** — `grep_search` for `<!-- [Slide N] -->`, `view_file` for context
-3. **Execute** — `replace_file_content` for precise replacement, following `PKU_ACADEMIC_CLASSIC.md`
+3. **Execute** — `replace_file_content` for precise replacement, following `ACADEMIC_CLASSIC.md`
 4. **Structural changes** (add/delete slides) — after completion, run:
    ```bash
    python3 {{FRONTEND_SLIDES_REPO_PATH}}/scripts/renumber-slides.py <input.html>
@@ -200,7 +206,64 @@ bash {{FRONTEND_SLIDES_REPO_PATH}}/scripts/export-pdf.sh <path.html> [output.pdf
 
 ---
 
-## Slide Comment Markers
+## Plots for slides
+
+Figures that are *made* for the deck should go in as vector or as live Plotly,
+never as screenshots of PDFs (rasterising is only for figures you receive as
+PDF, see "Attachment Path Convention"):
+
+- **`plotlyhep`** (submodule `plotlyhep/`, `pip install -e plotlyhep`) gives
+  Plotly the mplhep look — CMS/ATLAS templates, `histplot`, `cms.label` — and
+  converts existing matplotlib figures with `plotlyhep.convert.from_mpl(fig)`.
+  Its fidelity to mplhep is measured by a pixel diff, not asserted.
+- **Static, vector**: `fig.write_image("attachment_<deck>_html/Figures/S{N}/plot.svg")`
+  (kaleido) and `<img src="…/plot.svg">`; `bundle-html.py` inlines it. Sharp at
+  any projector resolution, a few kB.
+- **Interactive**: `php.html.script_tag("CMS") + php.html.SLIDE_CSS` once in
+  `<head>` (plotly.js + the experiment template as a page-level theme), then
+  `php.html.embed(fig, "plot-s{N}")` per figure. The figure is **frozen by
+  default** — it behaves like a picture, hover and its own buttons still work —
+  and carries a small "edit" chip that unlocks zoom, dragging annotations and
+  the legend; edits persist in the browser, "reset" discards them. The PDF
+  exporter renders the static state; keep a static SVG fallback for slides
+  that must survive offline.
+- Font: match the deck — the `paper` skin and mplhep both use TeX Gyre Heros /
+  Helvetica; set `fig.update_layout(font_family=...)` if the deck skin differs.
+
+---
+
+## Step 4: Presenting
+
+The engine ships fragment-aware navigation, so one key carries a whole talk:
+
+| Key | Action |
+|-----|--------|
+| `→` / `PageDown` | next step on this slide; when steps are exhausted (or there are none), next slide |
+| `←` / `PageUp` | previous step; at step 0, previous slide — arriving fully revealed |
+| `↓` / `↑` / `Space` | whole slides, always fully revealed (Q&A skimming) |
+| `B` / `R` | reveal every step on this slide / collapse it to step 0 |
+| `C` | review-comment mode (below) |
+| `E` / `W` | live text edit / save the edited HTML (comments are baked in) |
+| `G` / `F` | go to slide / fullscreen |
+
+Presenter clickers send `PageUp`/`PageDown`, so the clicker drives the build. A held key does not auto-repeat.
+
+**Steps.** Any element steps in with `class="st" data-st="N"` (`N` = 1, 2, …); the slide arrives with all of them hidden and `→` reveals them in order. Works on `<li>`, `<div>`, SVG `<g>`, `<span>` inside `<td>`. `class="st pop"` adds a rise-and-scale entrance; `data-until="M"` makes a transient that fades after step M (it is `display:none` in the PDF, so the export shows the final state). Hidden steps keep their box — a panel that a later element replaces belongs in an absolute overlay, not in normal flow. Rule from the field: the words arrive with the visual — step the bullet and the drawing it describes on the same beat (see `reference/FIELD_NOTES.md` §5–6).
+
+**Gates.** `init-slides.py` writes `style="--act: 'Part N';"` (or `'Appendix'` for Back Up) on each transition slide; skins that render an eyebrow (e.g. `paper`) read it. Never use CSS counters for this — hidden siblings do not increment in the headless export.
+
+**Review comments (`C`).** A reviewer presses `C`, clicks anywhere on a slide, and a numbered pin plus an editor appear; a side panel lists comments grouped by slide with resolve/delete, and exports Markdown or JSON (JSON imports back). Comments live in `localStorage` and are baked into the file by `W`, so a reviewer can simply send the saved HTML back. Pins render only while the mode is on, so the deck and the PDF stay clean. Strip `<script id="baked-comments">` before circulating a bundle.
+
+**Prove it headlessly** (Playwright is installed by the first `export-pdf.sh` run; run from a directory that has `node_modules/playwright`):
+
+```bash
+node {{FRONTEND_SLIDES_REPO_PATH}}/scripts/test-steps.mjs /abs/path/<deck>_bundle.html
+# prints the steps per slide and the last slide reached; a clean PDF exit code proves nothing about steps
+```
+
+---
+
+## Slide Marker Comments
 
 Each `<section>` must be preceded by `<!-- [Slide N] Type: Title -->`.
 Scroller end must have `<!-- END slides-scroller -->`.

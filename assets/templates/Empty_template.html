@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{{LANG_PLACEHOLDER}}">
 
 <head>
     <meta charset="UTF-8">
@@ -8,8 +8,8 @@
 
     <style>
         /* ===========================================
-           CSS CUSTOM PROPERTIES (Theme: PKU Red-Yellow Classic)
-           PKU Academic Presentation — Fixed 1920x1080 Canvas
+           CSS CUSTOM PROPERTIES (Theme: Classic Red-Yellow)
+           Academic Presentation — Fixed 1920x1080 Canvas
            =========================================== */
         :root {
             --theme-bg: #fefefc;
@@ -1052,6 +1052,73 @@
                 display: none !important;
             }
         }
+
+        /* === Comment mode (C): pins + review panel. Rendered only while active, so the
+           deck and the PDF export stay clean by construction. ============================ */
+        .slide { position: relative; }
+        body.comment-mode #scale-wrapper { cursor: crosshair; }
+        .cmt-pin {
+            position: absolute; z-index: 800; width: 34px; height: 34px; margin: -17px 0 0 -17px;
+            border-radius: 50%; background: #c8102e; color: #fff; border: 2px solid #fff;
+            font: 700 16px/30px 'Segoe UI', Helvetica, Arial, sans-serif; text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.35); cursor: pointer; display: none;
+        }
+        .cmt-pin.resolved { background: #6b7280; }
+        body.comment-mode .cmt-pin { display: block; }
+        .cmt-panel {
+            position: fixed; top: 0; right: 0; height: 100%; width: 360px; z-index: 9000;
+            background: #ffffff; color: #1f2937; border-left: 1px solid rgba(0,0,0,0.15);
+            box-shadow: -6px 0 24px rgba(0,0,0,0.18); transform: translateX(100%);
+            transition: transform 0.25s ease; display: flex; flex-direction: column;
+            font: 14px/1.4 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+        body.comment-mode .cmt-panel { transform: translateX(0); }
+        .cmt-panel header { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .cmt-panel header strong { flex: 1 1 100%; font-size: 15px; }
+        .cmt-panel header input { flex: 1 1 100%; padding: 5px 8px; border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; font: inherit; }
+        .cmt-panel button { padding: 4px 9px; border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; background: #f9fafb; font: inherit; font-size: 12px; cursor: pointer; }
+        .cmt-panel button:hover { background: #eef2ff; }
+        .cmt-panel .cmt-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+        .cmt-panel h4 { margin: 10px 14px 4px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b7280; cursor: pointer; }
+        .cmt-row { padding: 6px 14px 6px 46px; position: relative; cursor: pointer; }
+        .cmt-row:hover { background: #f3f4f6; }
+        .cmt-row .n { position: absolute; left: 14px; top: 6px; width: 24px; height: 24px; border-radius: 50%; background: #c8102e; color: #fff; font-size: 12px; line-height: 24px; text-align: center; font-weight: 700; }
+        .cmt-row.resolved .n { background: #9ca3af; }
+        .cmt-row.resolved .txt { text-decoration: line-through; color: #9ca3af; }
+        .cmt-row .meta { font-size: 11px; color: #6b7280; }
+        .cmt-row .act { margin-top: 3px; display: flex; gap: 6px; }
+        .cmt-row .act button { font-size: 11px; padding: 2px 7px; }
+        .cmt-popup {
+            position: fixed; z-index: 9500; width: 320px; background: #fff; border: 1px solid rgba(0,0,0,0.2);
+            border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); padding: 10px;
+            font: 14px 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+        .cmt-popup textarea { width: 100%; height: 90px; box-sizing: border-box; font: inherit; padding: 6px; border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; resize: vertical; }
+        .cmt-popup .row { display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px; }
+        .cmt-popup button { padding: 4px 10px; border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; background: #f9fafb; font: inherit; font-size: 12px; cursor: pointer; }
+        .cmt-popup button.primary { background: #c8102e; color: #fff; border-color: #c8102e; }
+        html.rv-instant .cmt-pin, html.rv-instant .cmt-panel, html.rv-instant .cmt-popup { display: none !important; }
+
+        /* Wide wordmark logos must not squash square ones */
+        .logo-img { max-width: 260px; object-fit: contain; }
+
+        /* === Steps (fragment-aware navigation, see SlidePresentation.setupKeyboardNav) ===
+           <el class="st" data-st="N">                 appears at step N (opacity only: keeps its box)
+           <el class="st pop" data-st="N">             rise-and-scale entrance
+           <el class="st" data-st="N" data-until="M">  transient, gone after step M; display:none in print
+           .dot / .curvepath inside a stepped group: staggered children (set --di on each dot) */
+        .st { opacity: 0; transition: opacity 0.45s ease; }
+        .st.on { opacity: 1; }
+        .st.pop { transform: translateY(12px) scale(0.97); transition: opacity 0.45s ease, transform 0.45s ease; }
+        .st.pop.on { transform: none; }
+        .st .dot { opacity: 0; transition: opacity 0.3s ease; }
+        .st.on .dot { opacity: 1; transition-delay: calc(var(--di, 0) * 90ms); }
+        .st .curvepath { opacity: 0; transition: opacity 0.5s ease; }
+        .st.on .curvepath { opacity: 1; transition-delay: 1.35s; }
+        /* Headless export (navigator.webdriver): every reveal and step lands instantly */
+        html.rv-instant .reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+        html.rv-instant .st, html.rv-instant .st * { opacity: 1 !important; transition: none !important; }
+        html.rv-instant .st[data-until] { display: none !important; }
     </style>
     <!-- MathJax 3 for LaTeX rendering -->
     <script>
@@ -1126,6 +1193,9 @@
                 this.pageNum = document.getElementById('pageNumber');
                 this.scroller = document.getElementById('slidesScroller');
                 this.isEditMode = false;
+                this.stepState = new Map();
+                // Headless export (Playwright): land every reveal and step instantly, no animation state
+                if (navigator.webdriver) document.documentElement.classList.add('rv-instant');
 
                 this.setupIntersectionObserver();
                 this.setupEditMode();
@@ -1330,6 +1400,7 @@
 
                     if ((e.key === 'w' || e.key === 'W') && this.isEditMode) {
                         setEditMode(false);
+                        if (window.slideComments) window.slideComments.beforeSave();   // bake comments, strip pin DOM
                         const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
                         const blob = new Blob([html], { type: 'text/html' });
                         const url = URL.createObjectURL(blob);
@@ -1346,10 +1417,30 @@
                         a.click();
                         document.body.removeChild(a);
                         URL.revokeObjectURL(url);
+                        if (window.slideComments) window.slideComments.afterSave();
                         setEditMode(true);
                         e.preventDefault();
                     }
                 });
+            }
+
+            // --- Step system helpers ---
+            stepsOf(sl) { return Array.from(sl.querySelectorAll('.st')); }
+            maxStep(st) { return st.reduce((m, el) => Math.max(m, +el.dataset.st), 0); }
+            setStep(sl, c) {
+                this.stepState.set(sl, c);
+                this.stepsOf(sl).forEach((el) => {
+                    const u = el.dataset.until;
+                    el.classList.toggle('on', +el.dataset.st <= c && (u === undefined || c <= +u));
+                });
+            }
+            // mode 'fwd': arrive at step 0 (presentation flow); 'full': fully revealed.
+            // Only ever scroll ±1 slide: scroll-snap-type mandatory grabs longer smooth scrolls.
+            jumpTo(target, mode) {
+                if (target < 0 || target >= this.slides.length) return;
+                const sl = this.slides[target], st = this.stepsOf(sl);
+                if (st.length) this.setStep(sl, mode === 'fwd' ? 0 : this.maxStep(st));
+                this.scroller.scrollTo({ top: target * 1080, behavior: 'smooth' });
             }
 
             setupKeyboardNav() {
@@ -1425,24 +1516,31 @@
                         return;
                     }
 
-                    const currentIndex = Math.round(this.scroller.scrollTop / 1080);
-
-                    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-                        e.preventDefault();
-                        if (currentIndex < this.slides.length - 1) {
-                            this.scroller.scrollTo({
-                                top: (currentIndex + 1) * 1080,
-                                behavior: 'smooth'
-                            });
-                        }
-                    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-                        e.preventDefault();
-                        if (currentIndex > 0) {
-                            this.scroller.scrollTo({
-                                top: (currentIndex - 1) * 1080,
-                                behavior: 'smooth'
-                            });
-                        }
+                    // --- Fragment-aware navigation ---------------------------------------
+                    //   → / PageDown  next step; when steps are exhausted, next slide (step 0)
+                    //   ← / PageUp    previous step; at step 0, previous slide (fully revealed)
+                    //   ↓ / ↑ / Space whole slides, landing fully revealed (Q&A skimming)
+                    //   B reveal all steps here · R collapse to step 0
+                    // Presenter clickers send PageUp/PageDown, so the clicker drives the build.
+                    const slides = Array.from(this.slides);
+                    const i = Math.max(0, Math.min(slides.length - 1, Math.round(this.scroller.scrollTop / 1080)));
+                    const sl = slides[i], st = this.stepsOf(sl);
+                    if (e.key === 'b' || e.key === 'B') { if (st.length) this.setStep(sl, this.maxStep(st)); return; }
+                    if (e.key === 'r' || e.key === 'R') { if (st.length) this.setStep(sl, 0); return; }
+                    let K = e.key;
+                    if (K === 'PageDown') K = 'ArrowRight';
+                    if (K === 'PageUp') K = 'ArrowLeft';
+                    if (K === ' ') K = 'ArrowDown';
+                    if (K !== 'ArrowUp' && K !== 'ArrowDown' && K !== 'ArrowLeft' && K !== 'ArrowRight') return;
+                    e.preventDefault();
+                    if (e.repeat) return;                       // a leaned-on clicker must not blast through
+                    if (K === 'ArrowUp')   { this.jumpTo(i - 1, 'full'); return; }
+                    if (K === 'ArrowDown') { this.jumpTo(i + 1, 'full'); return; }
+                    const c = this.stepState.get(sl) || 0, m = this.maxStep(st);
+                    if (K === 'ArrowRight') {
+                        if (st.length && c < m) this.setStep(sl, c + 1); else this.jumpTo(i + 1, 'fwd');
+                    } else {
+                        if (st.length && c > 0) this.setStep(sl, c - 1); else this.jumpTo(i - 1, 'full');
                     }
                 });
             }
@@ -1514,6 +1612,206 @@
             new SlidePresentation();
         });
     </script>
+    <script>
+        // 3. Comment mode — reviewers drop numbered pins on slides (C to toggle).
+        //    Spec shared by the McM/PPD slides agent; pins live in localStorage with a
+        //    baked <script id="baked-comments"> fallback that travels with a W-saved file.
+        (() => {
+            if (navigator.webdriver) return;                       // never in the PDF export
+            const STORE_KEY = 'slide-comments:' + location.pathname;
+            const AUTHOR_KEY = 'slide-comments:author';
+            const lsGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+            const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } };
+            const load = () => {
+                let fromLocal = null;
+                try { fromLocal = JSON.parse(lsGet(STORE_KEY) || 'null'); } catch (e) { }
+                if (Array.isArray(fromLocal) && fromLocal.length) return fromLocal;      // in-progress notes win
+                const baked = document.getElementById('baked-comments');
+                if (baked && baked.textContent.trim()) { try { return JSON.parse(baked.textContent) || []; } catch (e) { } }
+                return Array.isArray(fromLocal) ? fromLocal : [];
+            };
+            let comments = load();
+            let active = false;
+            const persist = () => lsSet(STORE_KEY, JSON.stringify(comments));
+            const slides = () => Array.from(document.querySelectorAll('.slide'));
+            const slideTitle = (i) => {
+                const s = slides()[i]; if (!s) return '';
+                return s.getAttribute('data-title') || (s.querySelector('.transition-text') || {}).textContent || '';
+            };
+
+            // --- panel ---
+            const panel = document.createElement('aside');
+            panel.className = 'cmt-panel';
+            panel.innerHTML = `<header>
+                <strong>Comments <span class="cmt-count"></span></strong>
+                <input class="cmt-author" placeholder="your name (saved for next time)">
+                <button data-act="md">Export Markdown</button>
+                <button data-act="json">Export JSON</button>
+                <button data-act="import">Import JSON</button>
+                <button data-act="clear">Clear all</button>
+                <input type="file" accept="application/json" class="cmt-file" style="display:none">
+              </header><div class="cmt-list"></div>`;
+            document.body.appendChild(panel);
+            const authorInput = panel.querySelector('.cmt-author');
+            authorInput.value = lsGet(AUTHOR_KEY) || '';
+            authorInput.addEventListener('change', () => lsSet(AUTHOR_KEY, authorInput.value.trim()));
+
+            const download = (name, text, type) => {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(new Blob([text], { type }));
+                a.download = name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+            };
+            const deckName = () => ((location.pathname.split('/').pop() || 'deck').replace(/\.html?$/, ''));
+            const toMarkdown = () => {
+                const by = new Map();
+                comments.forEach((c) => { if (!by.has(c.slide)) by.set(c.slide, []); by.get(c.slide).push(c); });
+                const out = [`# Comments on ${document.title}`, ''];
+                Array.from(by.keys()).sort((a, b) => a - b).forEach((i) => {
+                    out.push(`## Slide ${i + 1} — ${slideTitle(i)}`);
+                    by.get(i).forEach((c) => {
+                        const txt = c.resolved ? `~~${c.text}~~` : c.text;
+                        out.push(`- ${txt}  \n  _(${c.author || 'anon'}, ${c.date})_`);
+                    });
+                    out.push('');
+                });
+                return out.join('\n');
+            };
+            panel.addEventListener('click', (e) => {
+                const b = e.target.closest('button'); if (!b) return;
+                const act = b.dataset.act;
+                if (act === 'md') download(deckName() + '-comments.md', toMarkdown(), 'text/markdown');
+                if (act === 'json') download(deckName() + '-comments.json', JSON.stringify(comments, null, 2), 'application/json');
+                if (act === 'import') panel.querySelector('.cmt-file').click();
+                if (act === 'clear' && confirm('Delete all comments on this deck?')) { comments = []; persist(); renderAll(); }
+                const row = e.target.closest('.cmt-row');
+                if (row && act === 'resolve') { const c = comments.find((x) => x.id === row.dataset.id); c.resolved = !c.resolved; persist(); renderAll(); }
+                if (row && act === 'del') { comments = comments.filter((x) => x.id !== row.dataset.id); persist(); renderAll(); }
+            });
+            panel.querySelector('.cmt-file').addEventListener('change', (e) => {
+                const f = e.target.files[0]; if (!f) return;
+                f.text().then((txt) => { try { const arr = JSON.parse(txt); if (Array.isArray(arr)) { comments = arr; persist(); renderAll(); } } catch (err) { alert('Not a comments JSON file'); } });
+                e.target.value = '';
+            });
+            panel.querySelector('.cmt-list').addEventListener('click', (e) => {
+                if (e.target.closest('button')) return;
+                const row = e.target.closest('.cmt-row'); const h = e.target.closest('h4');
+                const i = row ? +row.dataset.slide : h ? +h.dataset.slide : -1;
+                if (i >= 0) document.getElementById('slidesScroller').scrollTo({ top: i * 1080, behavior: 'smooth' });
+            });
+
+            // --- pins ---
+            const clearPins = () => document.querySelectorAll('.cmt-pin').forEach((p) => p.remove());
+            const renderPins = () => {
+                clearPins();
+                if (!active) return;
+                const sl = slides();
+                comments.forEach((c, n) => {
+                    const s = sl[c.slide]; if (!s) return;
+                    const pin = document.createElement('div');
+                    pin.className = 'cmt-pin' + (c.resolved ? ' resolved' : '');
+                    pin.style.left = c.x + '%'; pin.style.top = c.y + '%';
+                    pin.textContent = n + 1; pin.title = c.text; pin.dataset.id = c.id;
+                    pin.addEventListener('click', (e) => { e.stopPropagation(); openEditor(c, e.clientX, e.clientY); });
+                    s.appendChild(pin);
+                });
+            };
+            const renderPanel = () => {
+                panel.querySelector('.cmt-count').textContent = comments.length ? `(${comments.filter((c) => !c.resolved).length} open / ${comments.length})` : '';
+                const list = panel.querySelector('.cmt-list'); list.innerHTML = '';
+                const by = new Map();
+                comments.forEach((c, n) => { if (!by.has(c.slide)) by.set(c.slide, []); by.get(c.slide).push([n, c]); });
+                Array.from(by.keys()).sort((a, b) => a - b).forEach((i) => {
+                    const h = document.createElement('h4'); h.dataset.slide = i; h.textContent = `Slide ${i + 1} · ${slideTitle(i)}`; list.appendChild(h);
+                    by.get(i).forEach(([n, c]) => {
+                        const row = document.createElement('div');
+                        row.className = 'cmt-row' + (c.resolved ? ' resolved' : ''); row.dataset.id = c.id; row.dataset.slide = i;
+                        row.innerHTML = `<span class="n">${n + 1}</span><div class="txt"></div><div class="meta"></div>
+                            <div class="act"><button data-act="resolve">${c.resolved ? 'Reopen' : 'Resolve'}</button><button data-act="del">Delete</button></div>`;
+                        row.querySelector('.txt').textContent = c.text;
+                        row.querySelector('.meta').textContent = `${c.author || 'anon'} · ${c.date}`;
+                        list.appendChild(row);
+                    });
+                });
+            };
+            const renderAll = () => { renderPins(); renderPanel(); };
+
+            // --- editor popup ---
+            let popup = null;
+            const closeEditor = () => { if (popup) { popup.remove(); popup = null; } };
+            const openEditor = (c, cx, cy) => {
+                closeEditor();
+                popup = document.createElement('div'); popup.className = 'cmt-popup';
+                popup.style.left = Math.min(cx + 12, window.innerWidth - 340) + 'px';
+                popup.style.top = Math.min(cy + 12, window.innerHeight - 180) + 'px';
+                popup.innerHTML = `<textarea placeholder="Comment for slide ${c.slide + 1}"></textarea>
+                    <div class="row"><button data-act="cancel">Cancel</button><button data-act="save" class="primary">Save</button></div>`;
+                const ta = popup.querySelector('textarea'); ta.value = c.text || '';
+                popup.addEventListener('click', (e) => {
+                    const b = e.target.closest('button'); if (!b) return;
+                    if (b.dataset.act === 'save') {
+                        const text = ta.value.trim();
+                        if (text) {
+                            c.text = text; c.author = authorInput.value.trim(); c.date = new Date().toISOString().slice(0, 10);
+                            if (!comments.includes(c)) comments.push(c);
+                            persist();
+                        }
+                        closeEditor(); renderAll();
+                    } else closeEditor();
+                });
+                ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) popup.querySelector('[data-act="save"]').click(); e.stopPropagation(); });
+                document.body.appendChild(popup); ta.focus();
+            };
+
+            // --- drop a pin: percentages of the slide's own rect, so pins survive any scale ---
+            document.addEventListener('click', (e) => {
+                if (!active) return;
+                if (e.target.closest('.cmt-panel, .cmt-popup, .cmt-pin')) return;
+                if (e.target.closest('a')) return;                 // links keep working in comment mode
+                const slide = e.target.closest('.slide'); if (!slide) return;
+                const r = slide.getBoundingClientRect();
+                if (!r.width || !r.height) return;                 // pre-layout gives NaN
+                const c = {
+                    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                    slide: slides().indexOf(slide),
+                    x: +(((e.clientX - r.left) / r.width) * 100).toFixed(2),
+                    y: +(((e.clientY - r.top) / r.height) * 100).toFixed(2),
+                    text: '', author: authorInput.value.trim(), date: new Date().toISOString().slice(0, 10), resolved: false
+                };
+                openEditor(c, e.clientX, e.clientY);
+            }, true);
+
+            // --- keys: C toggles; Escape closes the editor; never steal keys while typing ---
+            document.addEventListener('keydown', (e) => {
+                const el = document.activeElement;
+                if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) {
+                    if (e.key === 'Escape') { closeEditor(); el.blur(); }
+                    return;
+                }
+                if (e.key === 'Escape' && popup) { closeEditor(); return; }
+                if (e.key === 'c' || e.key === 'C') {
+                    active = !active;
+                    document.body.classList.toggle('comment-mode', active);
+                    closeEditor(); renderAll();
+                }
+            });
+
+            // --- W-save hooks: bake the comments into the file, keep the DOM free of pins ---
+            window.slideComments = {
+                beforeSave() {
+                    clearPins(); closeEditor();
+                    document.body.classList.remove('comment-mode');
+                    let tag = document.getElementById('baked-comments');
+                    if (!tag) { tag = document.createElement('script'); tag.id = 'baked-comments'; tag.type = 'application/json'; document.body.appendChild(tag); }
+                    tag.textContent = JSON.stringify(comments);
+                },
+                afterSave() { if (active) { document.body.classList.add('comment-mode'); renderPins(); } },
+                get all() { return comments; }
+            };
+            renderPanel();
+        })();
+    </script>
+
 
     <!-- Typewriter terminal animation (auto-detects id="typewriter-terminal") -->
     <script>
@@ -1629,7 +1927,7 @@
                 if (ratio < 0.9 || ratio > 1.1) {
                     img.style.borderRadius = '4px';
                 } else {
-                    // Square images (PKU, CEPC) default to circular
+                    // Square images (university seals, CEPC) default to circular
                     img.style.borderRadius = '50%';
                 }
             }
