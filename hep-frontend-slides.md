@@ -219,11 +219,14 @@ PDF, see "Attachment Path Convention"):
 - **Static, vector**: `fig.write_image("attachment_<deck>_html/Figures/S{N}/plot.svg")`
   (kaleido) and `<img src="…/plot.svg">`; `bundle-html.py` inlines it. Sharp at
   any projector resolution, a few kB.
-- **Interactive** (hover, zoom — a backup-slide luxury, not a talk-slide need):
-  `fig.to_html(full_html=False, include_plotlyjs=False, div_id="plot-s{N}")`
-  pasted into the slide, plus one `<script src="https://cdn.plot.ly/plotly-2.35.2.min.js">`
-  in `<head>`. The PDF exporter renders the static state; keep a static SVG
-  fallback for slides that must survive offline.
+- **Interactive**: `php.html.script_tag("CMS") + php.html.SLIDE_CSS` once in
+  `<head>` (plotly.js + the experiment template as a page-level theme), then
+  `php.html.embed(fig, "plot-s{N}")` per figure. The figure is **frozen by
+  default** — it behaves like a picture, hover and its own buttons still work —
+  and carries a small "edit" chip that unlocks zoom, dragging annotations and
+  the legend; edits persist in the browser, "reset" discards them. The PDF
+  exporter renders the static state; keep a static SVG fallback for slides
+  that must survive offline.
 - Font: match the deck — the `paper` skin and mplhep both use TeX Gyre Heros /
   Helvetica; set `fig.update_layout(font_family=...)` if the deck skin differs.
 
