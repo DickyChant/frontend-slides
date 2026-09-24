@@ -1,7 +1,8 @@
 // Headless check of the step system. Playwright sets navigator.webdriver, which
 // makes step-system.js exit on purpose (PDF mode) — so spoof it back to undefined.
 // Every animation bug we shipped had a clean exit code and was only visible in a
-// render or in this walk: never trust the export's exit status.
+// render or in this walk: never trust the export's exit status. This walk exits 1
+// when it does not reach the last slide, so CI can rely on it.
 //   cd <dir with node_modules/playwright>   (export-pdf.sh installs it)
 //   node test-steps.mjs /abs/path/deck_bundle.html
 import { chromium } from 'playwright';
@@ -27,5 +28,8 @@ for (let k = 0; k < 400; k++) {
   presses++;
   if (r.i >= (await page.evaluate(() => document.querySelectorAll('.slide').length)) - 1) break;
 }
-console.log('reached last slide:', last);
+const total = await page.evaluate(() => document.querySelectorAll('.slide').length);
+console.log(`reached last slide: ${last} of ${total - 1}`);
+await browser.close();
+if (last !== total - 1) { console.log(`FAILED: the walk got stuck at slide ${last}; ${total - 1} expected`); process.exit(1); }
 await browser.close();

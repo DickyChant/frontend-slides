@@ -1,0 +1,52 @@
+name: ci
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  scaffold-and-walk:
+    # The PR's test plan, automated: compile the scripts, scaffold a paper-skin deck, bundle it,
+    # and walk every step and slide headlessly with one key (scripts/test-steps.mjs exits 1 if
+    # the walk gets stuck before the last slide).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+      - name: Compile the scripts
+        run: python -m py_compile scripts/*.py
+      - name: Scaffold a paper-skin deck and one with defaults
+        run: |
+          mkdir -p /tmp/ci
+          python scripts/init-slides.py --logos CMS_logo.png CERN_logo.png --skin paper \
+            --title "CI deck" --author "CI Runner:1" --speaker "CI Runner" --affiliations "CERN" \
+            --event "GitHub Actions" --highlight "CI" --outline "Motivation:2" "Results:3" "Back Up:1" \
+            --out /tmp/ci/deck.html
+          python scripts/init-slides.py --title "Defaults" --author "CI Runner:1" --event "GitHub Actions" --out /tmp/ci/defaults.html
+          grep -q 'lang="en"' /tmp/ci/deck.html
+          grep -q '<title>CI deck</title>' /tmp/ci/deck.html
+          grep -q 'CMS_logo' /tmp/ci/defaults.html
+      - name: Renumber a copy, bundle the deck
+        run: |
+          cp /tmp/ci/deck.html /tmp/ci/renumbered.html
+          python scripts/renumber-slides.py /tmp/ci/renumbered.html
+          test -s /tmp/ci/renumbered.html
+          python scripts/bundle-html.py /tmp/ci/deck.html
+          test -s /tmp/ci/deck_bundle.html
+      - name: Headless step walk
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+          node scripts/test-steps.mjs /tmp/ci/deck_bundle.html
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: ci-deck
+          path: /tmp/ci/deck_bundle.html
