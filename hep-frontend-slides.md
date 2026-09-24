@@ -40,6 +40,8 @@ Fixed 1920×1080 canvas, 11 color skins + DIY custom skin for academic HTML pres
 | `scripts/bundle-html.py` | Base64 bundling | When user says bundle |
 | `scripts/export-pdf.sh` | PDF export (supports `--dpr N`) | When user says export PDF |
 | `scripts/test-steps.mjs` | Headless walk proving every step and slide spill works | After adding steps |
+| `plotlyhep/` (submodule) | mplhep-styled Plotly figures and matplotlib ↔ Plotly conversion, pixel-checked | Making plots for slides |
+| `claudish-to-english/` (submodule) | Prose de-slop pass for slide copy — cherry-pick its output | Language pass |
 
 All paths relative to: `{{FRONTEND_SLIDES_REPO_PATH}}/`
 
@@ -201,6 +203,29 @@ bash {{FRONTEND_SLIDES_REPO_PATH}}/scripts/export-pdf.sh <path.html> [output.pdf
 | `1 --compact` | 1280×720 | ~6MB | Quick preview |
 
 > ⚠️ **Prerequisites:** Node.js + npm (Playwright auto-installs on first run). PDF = static screenshots, no animations.
+
+---
+
+## Plots for slides
+
+Figures that are *made* for the deck should go in as vector or as live Plotly,
+never as screenshots of PDFs (rasterising is only for figures you receive as
+PDF, see "Attachment Path Convention"):
+
+- **`plotlyhep`** (submodule `plotlyhep/`, `pip install -e plotlyhep`) gives
+  Plotly the mplhep look — CMS/ATLAS templates, `histplot`, `cms.label` — and
+  converts existing matplotlib figures with `plotlyhep.convert.from_mpl(fig)`.
+  Its fidelity to mplhep is measured by a pixel diff, not asserted.
+- **Static, vector**: `fig.write_image("attachment_<deck>_html/Figures/S{N}/plot.svg")`
+  (kaleido) and `<img src="…/plot.svg">`; `bundle-html.py` inlines it. Sharp at
+  any projector resolution, a few kB.
+- **Interactive** (hover, zoom — a backup-slide luxury, not a talk-slide need):
+  `fig.to_html(full_html=False, include_plotlyjs=False, div_id="plot-s{N}")`
+  pasted into the slide, plus one `<script src="https://cdn.plot.ly/plotly-2.35.2.min.js">`
+  in `<head>`. The PDF exporter renders the static state; keep a static SVG
+  fallback for slides that must survive offline.
+- Font: match the deck — the `paper` skin and mplhep both use TeX Gyre Heros /
+  Helvetica; set `fig.update_layout(font_family=...)` if the deck skin differs.
 
 ---
 
